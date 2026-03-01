@@ -1,0 +1,193 @@
+import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
+import { Instagram, Facebook, MessageCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { fetchStoreConfig } from '@/services/storeConfig';
+
+function Layout({ children }) {
+  const [storeConfig, setStoreConfig] = useState(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const cfg = await fetchStoreConfig();
+        if (mounted) setStoreConfig(cfg && typeof cfg === 'object' ? cfg : {});
+      } catch (err) {
+        // fallback defaults when config fails to load
+        if (mounted) {
+          setStoreConfig({ name: 'Ofertas Universal Place', logo: '', banner: '', socialMedia: {} });
+          toast({ title: 'Erro', description: 'Não foi possível carregar a configuração da loja', variant: 'destructive' });
+        }
+      }
+    })();
+    return () => { mounted = false; };
+  }, [toast]);
+
+  if (!storeConfig) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>{storeConfig.name}</title>
+      </Helmet>
+
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        {/* Header */}
+        <header className="bg-white shadow-md sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-4">
+                {storeConfig.logo && (
+                  <img src={storeConfig.logo} alt={`${storeConfig.name} logo`} className="h-12 object-contain" />
+                )}
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{storeConfig.name}</h1>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                {/* Social Media Links */}
+                <div className="hidden md:flex items-center space-x-3">
+                  {storeConfig.socialMedia.instagram && (
+                    <a 
+                      href={storeConfig.socialMedia.instagram} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-pink-600 hover:text-pink-700 transition-colors"
+                    >
+                      <Instagram className="w-6 h-6" />
+                    </a>
+                  )}
+                  {storeConfig.socialMedia.facebook && (
+                    <a 
+                      href={storeConfig.socialMedia.facebook} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                      <Facebook className="w-6 h-6" />
+                    </a>
+                  )}
+                  {storeConfig.socialMedia.whatsapp && (
+                    <a 
+                      href={storeConfig.socialMedia.whatsapp} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-green-600 hover:text-green-700 transition-colors"
+                    >
+                      <MessageCircle className="w-6 h-6" />
+                    </a>
+                  )}
+                </div>
+
+                {/* Admin Button */}
+                <Link to="/admin/login">
+                  <button className="border border-gray-900 text-gray-900 rounded px-3 py-1 text-sm hover:bg-gray-100 transition">Admin</button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* page content */}
+        {children}
+
+        {/* Footer */}
+        <footer className="bg-gray-900 text-white py-12">
+          <div className="container mx-auto px-4">
+            {/* Top Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              {/* Brand Section */}
+              <div>
+                <p className="text-lg font-semibold">{storeConfig.name}</p>
+                <p className="text-gray-400 text-sm">As melhores ofertas em um só lugar.</p>
+              </div>
+
+              {/* Institutional Section */}
+              <div>
+                <p className="font-semibold mb-3">Institucional</p>
+                <ul className="space-y-2">
+                  <li>
+                    <Link to="/quem-somos" className="text-gray-400 hover:text-white transition-colors text-sm">
+                      Quem Somos
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/politica-de-privacidade" className="text-gray-400 hover:text-white transition-colors text-sm">
+                      Política de Privacidade
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/termos-de-uso" className="text-gray-400 hover:text-white transition-colors text-sm">
+                      Termos de Uso
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Social Media Section */}
+              <div>
+                <p className="font-semibold mb-3">Siga-nos</p>
+                <div className="flex items-center space-x-4">
+                  {storeConfig.socialMedia.instagram && (
+                    <a 
+                      href={storeConfig.socialMedia.instagram} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-pink-400 transition-colors"
+                    >
+                      <Instagram className="w-5 h-5" />
+                    </a>
+                  )}
+                  {storeConfig.socialMedia.facebook && (
+                    <a 
+                      href={storeConfig.socialMedia.facebook} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-blue-400 transition-colors"
+                    >
+                      <Facebook className="w-5 h-5" />
+                    </a>
+                  )}
+                  {storeConfig.socialMedia.whatsapp && (
+                    <a 
+                      href={storeConfig.socialMedia.whatsapp} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-green-400 transition-colors"
+                    >
+                      <MessageCircle className="w-5 h-5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="border-t border-gray-800 pt-6 mb-6">
+              <p className="text-gray-400 text-sm leading-relaxed">
+                O Ofertas Universal Place reúne ofertas de lojas parceiras.
+                <br />
+                Os preços e a disponibilidade podem variar conforme o site de destino.
+              </p>
+            </div>
+
+            {/* Copyright */}
+            <div className="border-t border-gray-800 pt-6 text-center">
+              <p className="text-gray-400 text-sm">© 2026 {storeConfig.name}. Todos os direitos reservados.</p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </>
+  );
+}
+
+export default Layout;
