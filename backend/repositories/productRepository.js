@@ -1,4 +1,4 @@
-const pool = require("../database")
+const { pool } = require("../database")
 
 async function createProduct({ name, image, user_id, link_oferta }) {
   console.log('💾 [REPO] INSERT products:', { name, user_id, image: !!image, link_oferta })

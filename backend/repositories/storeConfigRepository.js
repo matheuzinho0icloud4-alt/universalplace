@@ -1,4 +1,4 @@
-const pool = require('../database')
+const { pool } = require('../database')
 
 async function getConfig() {
   const res = await pool.query('SELECT id, config FROM store_config WHERE id = 1')

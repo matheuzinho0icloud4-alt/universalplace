@@ -8,6 +8,7 @@ const morgan = require("morgan")
 const config = require("./config")
 const { globalLimiter } = require("./middleware/rateLimiter")
 const errorHandler = require("./middleware/errorHandler")
+const { initializeDatabase, closeDatabase } = require("./database")
 
 const app = express()
 
@@ -59,6 +60,47 @@ app.use(errorHandler)
 // trust proxy headers when deployed behind a proxy (e.g. Render)
 app.set('trust proxy', true);
 
-app.listen(config.port, () => {
-  console.log(`🔥 PostgreSQL API listening on port ${config.port}`);
-})
+/**
+ * Initialize database and start server
+ * This ensures the database connection is ready before accepting requests
+ */
+async function startServer() {
+  try {
+    console.log(`[Server] Initializing database...`)
+    await initializeDatabase()
+    
+    const server = app.listen(config.port, () => {
+      console.log(`🔥 PostgreSQL API listening on port ${config.port}`)
+      console.log(`📍 Environment: ${config.nodeEnv}`)
+    })
+
+    /**
+     * Graceful shutdown on signals
+     */
+    process.on('SIGTERM', async () => {
+      console.log('[Server] SIGTERM received, starting graceful shutdown...')
+      server.close(async () => {
+        console.log('[Server] HTTP server closed')
+        await closeDatabase()
+        process.exit(0)
+      })
+    })
+
+    process.on('SIGINT', async () => {
+      console.log('[Server] SIGINT received, starting graceful shutdown...')
+      server.close(async () => {
+        console.log('[Server] HTTP server closed')
+        await closeDatabase()
+        process.exit(0)
+      })
+    })
+
+  } catch (err) {
+    console.error('❌ [Server] Failed to start server:', err.message)
+    await closeDatabase()
+    process.exit(1)
+  }
+}
+
+// Start the server
+startServer()
