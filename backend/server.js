@@ -8,7 +8,7 @@ const morgan = require("morgan")
 const config = require("./config")
 const { globalLimiter } = require("./middleware/rateLimiter")
 const errorHandler = require("./middleware/errorHandler")
-const { initializeDatabase, closeDatabase } = require("./database")
+const { initializeDatabase, closeDatabase, ensureAdminUser } = require("./database")
 
 const app = express()
 
@@ -81,6 +81,9 @@ async function startServer() {
   try {
     console.log(`[Server] Initializing database...`)
     await initializeDatabase()
+    
+    console.log(`[Server] Setting up admin user...`)
+    await ensureAdminUser()
     
     const server = app.listen(config.port, () => {
       console.log(`🔥 PostgreSQL API listening on port ${config.port}`)

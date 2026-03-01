@@ -63,10 +63,22 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        role TEXT DEFAULT 'user'
       )
     `)
     console.log('✅ [DB] Users table ready')
+
+    // Add role column if missing (migration for existing databases)
+    const userColumnsCheck = await pool.query(`
+      SELECT column_name FROM information_schema.columns 
+      WHERE table_name='users' AND column_name='role'
+    `)
+    if (userColumnsCheck.rows.length === 0) {
+      console.warn('⚠️ [DB] role column missing from users table! Adding...')
+      await pool.query('ALTER TABLE users ADD COLUMN role TEXT DEFAULT \'user\'')
+      console.log('✅ [DB] role column added to users table')
+    }
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS products (
@@ -142,8 +154,42 @@ async function closeDatabase() {
   }
 }
 
+/**
+ * Ensure that the single admin user exists in the database.
+ * Creates it if it doesn't exist; does nothing if it already does.
+ * This should be called after initializeDatabase() during startup.
+ */
+async function ensureAdminUser() {
+  const adminEmail = 'matheuzinho0@icloud.com'
+  const adminPasswordHash = '$2b$12$tsD8m2APLjnOQPeFcrz1d.IX8laSbo5U94aWHP2YdEIoHMOmWwmA.'
+
+  try {
+    // Check if admin user already exists
+    const existingAdmin = await pool.query(
+      'SELECT id FROM users WHERE email = $1',
+      [adminEmail]
+    )
+
+    if (existingAdmin.rows.length > 0) {
+      console.log('✅ [DB] Admin user already exists')
+      return
+    }
+
+    // Create admin user if it doesn't exist
+    await pool.query(
+      'INSERT INTO users (email, password, role) VALUES ($1, $2, $3)',
+      [adminEmail, adminPasswordHash, 'admin']
+    )
+    console.log('✅ [DB] Admin user created successfully')
+  } catch (err) {
+    console.error('❌ [DB] Failed to ensure admin user:', err.message)
+    throw new Error(`Admin user setup failed: ${err.message}`)
+  }
+}
+
 module.exports = {
   pool,
   initializeDatabase,
   closeDatabase,
+  ensureAdminUser,
 }
