@@ -57,8 +57,18 @@ app.use("/api/store-config", require("./routes/storeConfig"))
 // error handler must go last
 app.use(errorHandler)
 
-// trust proxy headers when deployed behind a proxy (e.g. Render)
-app.set('trust proxy', true);
+// Configure `trust proxy` only in production to avoid proxy header spoofing.
+// When running on Render (or similar PaaS behind a single trusted proxy),
+// trusting the first proxy (value `1`) allows Express to correctly derive
+// `req.ip` from `X-Forwarded-For` while minimizing the risk of header forgery.
+if (config.nodeEnv === 'production') {
+  app.set('trust proxy', 1)
+  console.log('[Server] trust proxy enabled (production)')
+} else {
+  // In development we do NOT enable trust proxy to avoid accepting spoofed IPs
+  // (Express default is not to trust proxy headers).
+  console.log('[Server] trust proxy disabled (development)')
+}
 
 /**
  * Initialize database and start server
