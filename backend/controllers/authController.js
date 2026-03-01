@@ -1,16 +1,6 @@
 const authService = require("../services/authService")
 const config = require("../config")
 
-async function register(req, res, next) {
-  try {
-    const { email, password } = req.body
-    const user = await authService.register(email, password)
-    res.json({ id: user.id })
-  } catch (err) {
-    next(err)
-  }
-}
-
 async function login(req, res, next) {
   try {
     const { email, password } = req.body
@@ -60,4 +50,4 @@ async function getCurrentUser(req, res, next) {
   }
 }
 
-module.exports = { register, login, logout, getCurrentUser }
+module.exports = { login, logout, getCurrentUser }

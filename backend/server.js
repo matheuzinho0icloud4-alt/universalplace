@@ -29,15 +29,21 @@ if (config.nodeEnv === 'development') {
 }
 app.use(helmet(helmetOptions));
 
-// CORS configuration with credentials for cookies. Only the frontend origin(s) are allowed.
-// `CORS_ORIGIN` can be a single URL or a comma-separated list for multiple domains.
-const origins = (config.corsOrigin || '').split(',').map(s => s.trim()).filter(Boolean);
+// CORS configuration with credentials for cookies.
+// CORS_ORIGIN is required (validated in config/index.js).
+// Can be a single URL or comma-separated list for multiple domains.
+const origins = config.corsOrigin.split(',').map(s => s.trim()).filter(Boolean);
+if (origins.length === 0) {
+  console.error('❌ [Server] CORS_ORIGIN is configured but resulted in empty origins list');
+  process.exit(1);
+}
 app.use(
   cors({
-    origin: origins.length > 1 ? origins : origins[0] || false,
+    origin: origins.length > 1 ? origins : origins[0],
     credentials: true,
   })
 );
+console.log('[Server] CORS configured for origins:', origins.join(', '));
 
 // request logging
 app.use(morgan("combined"))
@@ -57,16 +63,13 @@ app.use("/api/store-config", require("./routes/storeConfig"))
 // error handler must go last
 app.use(errorHandler)
 
-// Configure `trust proxy` only in production to avoid proxy header spoofing.
-// When running on Render (or similar PaaS behind a single trusted proxy),
-// trusting the first proxy (value `1`) allows Express to correctly derive
-// `req.ip` from `X-Forwarded-For` while minimizing the risk of header forgery.
+// Enable trust proxy only in production.
+// Render and similar PaaS platforms sit behind a single trusted proxy.
+// Set to `1` to trust only the first proxy in the chain.
 if (config.nodeEnv === 'production') {
   app.set('trust proxy', 1)
   console.log('[Server] trust proxy enabled (production)')
 } else {
-  // In development we do NOT enable trust proxy to avoid accepting spoofed IPs
-  // (Express default is not to trust proxy headers).
   console.log('[Server] trust proxy disabled (development)')
 }
 
