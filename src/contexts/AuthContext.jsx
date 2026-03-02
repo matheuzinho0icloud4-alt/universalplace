@@ -29,14 +29,16 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     setLoading(true)
     try {
-      const { data } = await api.post('/auth/login', { email, password })
-      const user = data?.user;
+      // POST to /auth/login sets httpOnly cookie. We must then call /auth/me
+      // to validate the session and obtain current user data.
+      await api.post('/auth/login', { email, password })
+      const { data } = await api.get('/auth/me')
+      const user = data?.user
       if (user && typeof user === 'object') {
         setCurrentUser(user)
         return true
       }
-      console.warn('login: received unexpected user object', user);
-      setCurrentUser(null);
+      setCurrentUser(null)
       return false
     } catch (err) {
       setCurrentUser(null)
@@ -46,13 +48,10 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function register(email, password) {
-    setLoading(true)
-    try {
-      await api.post('/auth/register', { email, password })
-    } finally {
-      setLoading(false)
-    }
+  async function register() {
+    // Registration is disabled in this closed system. Keep a no-op that
+    // returns a rejected promise so UI can handle it gracefully.
+    return Promise.reject(new Error('Registration is disabled'))
   }
 
   async function logout() {

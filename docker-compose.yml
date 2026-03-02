@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: up-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: universalplace
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: up-backend
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PORT: 4000
+      NODE_ENV: development
+      CORS_ORIGIN: "http://localhost:3000"
+      JWT_SECRET: devsecret
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/universalplace"
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/usr/src/app:cached
+      - /usr/src/app/node_modules
+    command: ["npm", "run", "dev"]
+
+volumes:
+  db-data:

@@ -7,7 +7,6 @@ import ScrollToTop from '@/components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
-import RegisterPage from '@/pages/RegisterPage';
 import AdminDashboard from '@/pages/AdminDashboard';
 import QuemSomos from '@/pages/QuemSomos';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
@@ -24,7 +23,6 @@ function App() {
           <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
           <Route path="/termos-de-uso" element={<TermsOfUse />} />
           <Route path="/admin/login" element={<LoginPage />} />
-          <Route path="/admin/register" element={<RegisterPage />} />
           <Route 
             path="/admin/dashboard" 
             element={

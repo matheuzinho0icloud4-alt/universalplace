@@ -111,7 +111,7 @@ const LoginPage = () => {
 
             <div className="mt-4 p-3 bg-blue-50 rounded-md">
               <p className="text-xs text-blue-800">
-                <strong>Tip:</strong> create an account through the registration endpoint or use existing email/password.
+                <strong>Note:</strong> registrations are disabled. Ask the administrator to create an account if you need access.
               </p>
             </div>
           </CardContent>

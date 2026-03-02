@@ -13,7 +13,7 @@ router.post("/login", authLimiter, loginRules, checkErrors, login)
 // get current user (protected)
 router.get("/me", authMiddleware, getCurrentUser)
 
-// logout
-router.post("/logout", authMiddleware, logout)
+// logout (allow clearing cookie even if token expired)
+router.post("/logout", logout)
 
 module.exports = router

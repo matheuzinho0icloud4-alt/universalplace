@@ -16,8 +16,9 @@ async function login(email, password) {
     err.status = 401
     throw err
   }
-  const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: "1d" })
-  return { token, user: { id: user.id, email: user.email } }
+  const payload = { id: user.id, role: user.role || 'user' }
+  const token = jwt.sign(payload, config.jwtSecret, { expiresIn: "15m", algorithm: 'HS256' })
+  return { token, user: { id: user.id, email: user.email, role: user.role || 'user' } }
 }
 
 module.exports = { login }

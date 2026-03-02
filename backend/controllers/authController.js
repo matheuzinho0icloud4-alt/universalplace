@@ -11,10 +11,12 @@ async function login(req, res, next) {
     // in production, use sameSite: "strict" with secure: true (HTTPS only)
     res.cookie("token", result.token, {
       httpOnly: true,
-      secure: config.nodeEnv === "production", // only over HTTPS in prod
-      sameSite: config.nodeEnv === "production" ? "strict" : "lax",
+      secure: config.nodeEnv === 'production', // true in production (HTTPS)
+      // For cross-site cookie delivery, SameSite must be 'none'.
+      // In development you may need to run frontend over HTTPS to allow this.
+      sameSite: 'none',
       path: "/",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 15 * 60 * 1000, // 15 minutes
     })
 
     // return user without token
@@ -28,8 +30,8 @@ async function logout(req, res, next) {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: config.nodeEnv === "production",
-      sameSite: config.nodeEnv === "production" ? "strict" : "lax",
+      secure: config.nodeEnv === 'production',
+      sameSite: 'none',
       path: "/"
     })
     res.json({ success: true })
@@ -44,7 +46,7 @@ async function getCurrentUser(req, res, next) {
     if (!req.user) {
       return res.status(401).json({ error: "Não autenticado" })
     }
-    res.json({ user: { id: req.user.id, email: req.user.email } })
+    res.json({ user: { id: req.user.id, email: req.user.email, role: req.user.role || 'user' } })
   } catch (err) {
     next(err)
   }

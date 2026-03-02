@@ -1,9 +1,10 @@
 
 const jwt = require("jsonwebtoken")
 const config = require("../config")
+const userRepo = require("../repositories/userRepository")
 
-function authMiddleware(req, res, next) {
-  const token = req.cookies.token
+async function authMiddleware(req, res, next) {
+  const token = req.cookies && req.cookies.token
 
   if (!token) {
     return res.status(401).json({ error: "Token ausente" })
@@ -13,7 +14,14 @@ function authMiddleware(req, res, next) {
     const decoded = jwt.verify(token, config.jwtSecret, {
       algorithms: ['HS256']
     })
-    req.user = decoded
+
+    // attach full user information from DB to req.user
+    const user = await userRepo.findById(decoded.id)
+    if (!user) {
+      return res.status(401).json({ error: 'Usuário não encontrado' })
+    }
+
+    req.user = { id: user.id, email: user.email, role: user.role || 'user' }
     next()
   } catch (err) {
     if (err.name === 'TokenExpiredError') {

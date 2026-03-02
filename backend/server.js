@@ -32,18 +32,23 @@ app.use(helmet(helmetOptions));
 // CORS configuration with credentials for cookies.
 // CORS_ORIGIN is required (validated in config/index.js).
 // Can be a single URL or comma-separated list for multiple domains.
-const origins = config.corsOrigin.split(',').map(s => s.trim()).filter(Boolean);
-if (origins.length === 0) {
+const allowedOrigins = config.corsOrigin.split(',').map(s => s.trim()).filter(Boolean);
+if (allowedOrigins.length === 0) {
   console.error('❌ [Server] CORS_ORIGIN is configured but resulted in empty origins list');
   process.exit(1);
 }
-app.use(
-  cors({
-    origin: origins.length > 1 ? origins : origins[0],
-    credentials: true,
-  })
-);
-console.log('[Server] CORS configured for origins:', origins.join(', '));
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // allow requests with no origin (e.g. mobile apps, curl)
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) return callback(null, true)
+    return callback(new Error('Not allowed by CORS'))
+  },
+  credentials: true,
+}))
+
+console.log('[Server] CORS configured for origins:', allowedOrigins.join(', '));
 
 // request logging
 app.use(morgan("combined"))
