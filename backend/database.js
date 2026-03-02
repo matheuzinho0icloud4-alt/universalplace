@@ -1,7 +1,15 @@
 
+// ============================================================================
+// DATABASE MODULE - PostgreSQL Connection Pool & Schema Management
+// ============================================================================
+
 const { Pool } = require("pg")
 const config = require("./config")
 const logger = require('./utils/logger')
+
+// ============================================================================
+// POOL CONFIGURATION
+// ============================================================================
 
 /**
  * Configure Pool with SSL support for production environments (Render, etc.)
@@ -10,12 +18,7 @@ const logger = require('./utils/logger')
  */
 const poolConfig = {
   connectionString: config.databaseUrl,
-  // SSL configuration for production (Render requires SSL/TLS)
-  ssl:
-    config.nodeEnv === 'production'
-      ? { rejectUnauthorized: false }
-      : false,
-  // Connection pool settings for production stability
+  ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
   max: 20, // maximum pool size
   idleTimeoutMillis: 30000, // close idle clients after 30s
   connectionTimeoutMillis: 10000, // connection attempt timeout
@@ -23,22 +26,29 @@ const poolConfig = {
 
 const pool = new Pool(poolConfig)
 
+// ============================================================================
+// POOL EVENT HANDLERS
+// ============================================================================
+
 /**
  * Handle errors on idle clients
  */
-const logger = require('./utils/logger')
-
 pool.on('error', (err) => {
   logger.error('❌ [DB] Unexpected error on idle PostgreSQL client: %o', err)
   process.exit(1)
 })
 
 /**
- * Handle connection errors during initial setup
+ * Handle successful connections
  */
 pool.on('connect', () => {
   logger.info('✅ [DB] Connected to PostgreSQL')
 })
+
+
+// ============================================================================
+// DATABASE INITIALIZATION & SCHEMA MANAGEMENT
+// ============================================================================
 
 /**
  * Initialize database schema and verify connectivity
@@ -61,7 +71,7 @@ async function initializeDatabase() {
   }
 
   try {
-    // Create tables with constraints and indexes
+    // Create users table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -72,7 +82,7 @@ async function initializeDatabase() {
     `)
     logger.info('✅ [DB] Users table ready')
 
-    // Add role column if missing (migration for existing databases)
+    // Migration: Add role column if missing (for existing databases)
     const userColumnsCheck = await pool.query(`
       SELECT column_name FROM information_schema.columns 
       WHERE table_name='users' AND column_name='role'
@@ -83,6 +93,7 @@ async function initializeDatabase() {
       logger.info('✅ [DB] role column added to users table')
     }
 
+    // Create products table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS products (
         id SERIAL PRIMARY KEY,
@@ -94,7 +105,7 @@ async function initializeDatabase() {
     `)
     logger.info('✅ [DB] Products table ready')
 
-    // store_config table: single-row JSON config (id = 1)
+    // Create store_config table (single-row JSON config, id = 1)
     await pool.query(`
       CREATE TABLE IF NOT EXISTS store_config (
         id SERIAL PRIMARY KEY,
@@ -117,7 +128,7 @@ async function initializeDatabase() {
       logger.info('✅ [DB] Inserted default store_config (id=1)')
     }
 
-    // Verify columns exist
+    // Verify products columns and run migrations if needed
     const columnsCheck = await pool.query(`
       SELECT column_name FROM information_schema.columns 
       WHERE table_name='products' 
@@ -126,7 +137,7 @@ async function initializeDatabase() {
     const columns = columnsCheck.rows.map(r => r.column_name)
     logger.info('📋 [DB] Products columns: %s', columns.join(', '))
 
-    // Verify link_oferta exists
+    // Migration: Add link_oferta column if missing
     if (!columns.includes('link_oferta')) {
       logger.warn('⚠️ [DB] link_oferta column missing! Running migration...')
       await pool.query('ALTER TABLE products ADD COLUMN IF NOT EXISTS link_oferta TEXT')
@@ -145,6 +156,10 @@ async function initializeDatabase() {
   }
 }
 
+// ============================================================================
+// DATABASE SHUTDOWN
+// ============================================================================
+
 /**
  * Graceful shutdown: close all connections
  */
@@ -156,6 +171,10 @@ async function closeDatabase() {
     logger.error('❌ [DB] Error closing connection pool: %o', err)
   }
 }
+
+// ============================================================================
+// ADMIN USER MANAGEMENT
+// ============================================================================
 
 /**
  * Ensure that the single admin user exists in the database.
@@ -189,6 +208,10 @@ async function ensureAdminUser() {
     throw new Error(`Admin user setup failed: ${err.message}`)
   }
 }
+
+// ============================================================================
+// MODULE EXPORTS
+// ============================================================================
 
 module.exports = {
   pool,
