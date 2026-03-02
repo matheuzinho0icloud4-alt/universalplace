@@ -13,10 +13,16 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data } = await api.get('/auth/me')
-        setCurrentUser(data.user)
+        const { data: response } = await api.get('/auth/me')
+        // Response structure: { success: true, data: user }
+        const user = response?.data
+        if (user && typeof user === 'object') {
+          setCurrentUser(user)
+        } else {
+          setCurrentUser(null)
+        }
       } catch (err) {
-        // 401 or other error = not authenticated
+        // 401 or other error = not authenticated (silent)
         setCurrentUser(null)
       } finally {
         setLoading(false)
@@ -29,11 +35,11 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     setLoading(true)
     try {
-      // POST to /auth/login sets httpOnly cookie. We must then call /auth/me
-      // to validate the session and obtain current user data.
+      // POST to /auth/login sets httpOnly cookie. Response: { success: true, data: user }
       await api.post('/auth/login', { email, password })
-      const { data } = await api.get('/auth/me')
-      const user = data?.user
+      const { data: response } = await api.get('/auth/me')
+      // Response structure: { success: true, data: user }
+      const user = response?.data
       if (user && typeof user === 'object') {
         setCurrentUser(user)
         return true
