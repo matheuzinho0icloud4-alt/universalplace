@@ -22,10 +22,23 @@ const HomePage = () => {
     setLoading(true);
     try {
       const cfg = await fetchStoreConfig();
-      setStoreConfig(cfg && typeof cfg === 'object' ? cfg : {});
+      // Ensure cfg has all required properties with defaults
+      const fullCfg = {
+        name: cfg?.name || 'Ofertas Universal Place',
+        logo: cfg?.logo || '',
+        banner: cfg?.banner || '',
+        socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
+      };
+      setStoreConfig(fullCfg);
     } catch (err) {
       // fallback to default if API fails
-      setStoreConfig({ name: 'Ofertas Universal Place', logo: '', banner: '', socialMedia: {} });
+      setStoreConfig({ 
+        name: 'Ofertas Universal Place', 
+        logo: '', 
+        banner: '', 
+        socialMedia: { instagram: '', facebook: '', whatsapp: '' } 
+      });
+      console.warn('HomePage: failed to load store config', err?.message);
     }
     try {
       const prods = await fetchProducts();

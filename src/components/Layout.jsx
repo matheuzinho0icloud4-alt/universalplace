@@ -14,12 +14,24 @@ function Layout({ children }) {
     (async () => {
       try {
         const cfg = await fetchStoreConfig();
-        if (mounted) setStoreConfig(cfg && typeof cfg === 'object' ? cfg : {});
+        // Ensure cfg has all required properties with defaults
+        const fullCfg = {
+          name: cfg?.name || 'Ofertas Universal Place',
+          logo: cfg?.logo || '',
+          banner: cfg?.banner || '',
+          socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
+        };
+        if (mounted) setStoreConfig(fullCfg);
       } catch (err) {
         // fallback defaults when config fails to load
         if (mounted) {
-          setStoreConfig({ name: 'Ofertas Universal Place', logo: '', banner: '', socialMedia: {} });
-          toast({ title: 'Erro', description: 'Não foi possível carregar a configuração da loja', variant: 'destructive' });
+          setStoreConfig({ 
+            name: 'Ofertas Universal Place', 
+            logo: '', 
+            banner: '', 
+            socialMedia: { instagram: '', facebook: '', whatsapp: '' } 
+          });
+          console.warn('Layout: failed to load store config, using defaults', err?.message);
         }
       }
     })();

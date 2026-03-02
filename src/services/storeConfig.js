@@ -1,16 +1,21 @@
 import api from './api'
 
 export async function fetchStoreConfig() {
-  const res = await api.get('/api/store-config');
-  const payload = res?.data;
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('fetchStoreConfig: invalid response from server');
+  try {
+    const { data: response } = await api.get('/api/store-config');
+    // Response structure: { success: true, data: config }
+    const cfg = response?.data;
+    if (!cfg || typeof cfg !== 'object') {
+      console.warn('fetchStoreConfig: config is not an object, using defaults', cfg);
+      // Return empty config object - will use defaults
+      return { name: '', logo: '', banner: '', socialMedia: {} };
+    }
+    return cfg;
+  } catch (err) {
+    console.warn('fetchStoreConfig: failed to fetch store config', err.message);
+    // Return empty config object instead of throwing - let Layout use defaults
+    return { name: '', logo: '', banner: '', socialMedia: {} };
   }
-  const cfg = payload.data || payload.config;
-  if (!cfg || typeof cfg !== 'object') {
-    throw new Error('fetchStoreConfig: invalid config received from server');
-  }
-  return cfg;
 }
 
 export async function updateStoreConfig(config) {
@@ -18,24 +23,28 @@ export async function updateStoreConfig(config) {
     throw new TypeError('updateStoreConfig expects a payload');
   }
 
-  let res
-  if (config instanceof FormData) {
-    // Let axios set the correct multipart boundary header
-    res = await api.put('/api/store-config', config)
-  } else {
-    if (typeof config !== 'object') {
-      throw new TypeError('updateStoreConfig expects an object or FormData');
+  try {
+    let res;
+    if (config instanceof FormData) {
+      // Let axios set the correct multipart boundary header
+      res = await api.put('/api/store-config', config);
+    } else {
+      if (typeof config !== 'object') {
+        throw new TypeError('updateStoreConfig expects an object or FormData');
+      }
+      res = await api.put('/api/store-config', config);
     }
-    res = await api.put('/api/store-config', config)
-  }
 
-  const payload = res?.data;
-  if (!payload || typeof payload !== 'object') {
-    throw new Error('updateStoreConfig: invalid response from server');
+    const { data: response } = res;
+    // Response structure: { success: true, data: config }
+    const cfg = response?.data;
+    if (!cfg || typeof cfg !== 'object') {
+      console.warn('updateStoreConfig: config is not an object', cfg);
+      throw new Error('Invalid config received from server');
+    }
+    return cfg;
+  } catch (err) {
+    console.error('updateStoreConfig: failed to update store config', err.message);
+    throw err; // Re-throw so caller can handle the error
   }
-  const cfg = payload.data || payload.config;
-  if (!cfg || typeof cfg !== 'object') {
-    throw new Error('updateStoreConfig: invalid config received from server');
-  }
-  return cfg;
 }
