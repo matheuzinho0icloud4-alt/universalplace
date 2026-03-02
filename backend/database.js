@@ -25,8 +25,10 @@ const pool = new Pool(poolConfig)
 /**
  * Handle errors on idle clients
  */
+const logger = require('./utils/logger')
+
 pool.on('error', (err) => {
-  console.error('❌ [DB] Unexpected error on idle PostgreSQL client:', err.message)
+  logger.error('❌ [DB] Unexpected error on idle PostgreSQL client: %o', err)
   process.exit(1)
 })
 
@@ -34,7 +36,7 @@ pool.on('error', (err) => {
  * Handle connection errors during initial setup
  */
 pool.on('connect', () => {
-  console.log('✅ [DB] Connected to PostgreSQL')
+  logger.info('✅ [DB] Connected to PostgreSQL')
 })
 
 /**

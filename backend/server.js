@@ -8,6 +8,7 @@ const morgan = require("morgan")
 const config = require("./config")
 const { globalLimiter } = require("./middleware/rateLimiter")
 const errorHandler = require("./middleware/errorHandler")
+const logger = require('./utils/logger')
 const { initializeDatabase, closeDatabase, ensureAdminUser } = require("./database")
 
 const app = express()
@@ -117,11 +118,21 @@ async function startServer() {
     })
 
   } catch (err) {
-    console.error('❌ [Server] Failed to start server:', err.message)
+    logger.error('❌ [Server] Failed to start server: %s', err.stack || err)
     await closeDatabase()
     process.exit(1)
   }
 }
 
 // Start the server
+// Global process handlers to ensure errors are logged
+process.on('unhandledRejection', (reason) => {
+  logger.error('Unhandled Rejection: %o', reason)
+})
+
+process.on('uncaughtException', (err) => {
+  logger.error('Uncaught Exception: %o', err)
+  process.exit(1)
+})
+
 startServer()

@@ -6,21 +6,17 @@ async function login(req, res, next) {
     const { email, password } = req.body
     const result = await authService.login(email, password)
 
-    // send JWT as httpOnly cookie
-    // in development, we allow lax sameSite to accommodate frontend running on a different origin
-    // in production, use sameSite: "strict" with secure: true (HTTPS only)
+    // send JWT as httpOnly cookie (exact required settings)
     res.cookie("token", result.token, {
       httpOnly: true,
-      secure: config.nodeEnv === 'production', // true in production (HTTPS)
-      // For cross-site cookie delivery, SameSite must be 'none'.
-      // In development you may need to run frontend over HTTPS to allow this.
-      sameSite: 'none',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      maxAge: 15 * 60 * 1000,
       path: "/",
-      maxAge: 15 * 60 * 1000, // 15 minutes
     })
 
-    // return user without token
-    res.json({ user: result.user })
+    // return standard success response
+    res.json({ success: true, user: result.user })
   } catch (err) {
     next(err)
   }
@@ -30,9 +26,9 @@ async function logout(req, res, next) {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: config.nodeEnv === 'production',
-      sameSite: 'none',
-      path: "/"
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/",
     })
     res.json({ success: true })
   } catch (err) {
@@ -44,9 +40,13 @@ async function getCurrentUser(req, res, next) {
   try {
     // req.user is set by authMiddleware from decoded JWT
     if (!req.user) {
-      return res.status(401).json({ error: "Não autenticado" })
+      const err = new Error('Not authenticated')
+      err.status = 401
+      err.errorCode = 'NOT_AUTHENTICATED'
+      return next(err)
     }
-    res.json({ user: { id: req.user.id, email: req.user.email, role: req.user.role || 'user' } })
+
+    res.json({ success: true, user: { id: req.user.id, email: req.user.email, role: req.user.role || 'user' } })
   } catch (err) {
     next(err)
   }

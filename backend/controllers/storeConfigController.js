@@ -1,77 +1,81 @@
 const storeConfigService = require('../services/storeConfigService')
-const config = require('../config')
+const appConfig = require('../config')
+const { z } = require('zod')
+const logger = require('../utils/logger')
+
+const StoreConfigSchema = z.object({
+  name: z.string().min(1).optional(),
+  logo: z.string().url().optional(),
+  banner: z.string().url().optional(),
+  socialMedia: z.object({
+    instagram: z.string().optional(),
+    facebook: z.string().optional(),
+    whatsapp: z.string().optional(),
+  }).optional(),
+})
 
 async function getConfig(req, res, next) {
   try {
-    const config = await storeConfigService.get()
-    res.json({ success: true, config })
+    const cfg = await storeConfigService.get()
+    return res.json({ success: true, config: cfg })
   } catch (err) {
-    console.error('❌ [STORE CONFIG] GET error:', err.message)
-    res.status(500).json({ success: false, message: 'Failed to load store configuration' })
+    return next(err)
   }
 }
 
 async function updateConfig(req, res, next) {
   try {
-    // Build config from form fields and uploaded files
+    // Build input object from allowed fields only
     const body = req.body || {}
     const files = req.files || {}
 
-    const payload = {
+    const base = appConfig.baseUrl || `${req.protocol}://${req.get('host')}`
+
+    const input = {
       name: body.name || undefined,
+      logo: body.logo || undefined,
+      banner: body.banner || undefined,
       socialMedia: {
-        instagram: body.instagram || (body.socialMedia && body.socialMedia.instagram) || '',
-        facebook: body.facebook || (body.socialMedia && body.socialMedia.facebook) || '',
-        whatsapp: body.whatsapp || (body.socialMedia && body.socialMedia.whatsapp) || ''
+        instagram: body.instagram || undefined,
+        facebook: body.facebook || undefined,
+        whatsapp: body.whatsapp || undefined,
       }
     }
 
-    // attach uploaded files' public URLs when present
-    const base = config.baseUrl || `${req.protocol}://${req.get('host')}`;
+    // handle uploaded files
     if (files.logo && files.logo[0]) {
-      payload.logo = `${base}/uploads/${encodeURIComponent(files.logo[0].filename)}`
-    } else if (body.logo) {
-      payload.logo = body.logo
+      input.logo = `${base}/uploads/${encodeURIComponent(files.logo[0].filename)}`
     }
-
     if (files.banner && files.banner[0]) {
-      payload.banner = `${base}/uploads/${encodeURIComponent(files.banner[0].filename)}`
-    } else if (body.banner) {
-      payload.banner = body.banner
+      input.banner = `${base}/uploads/${encodeURIComponent(files.banner[0].filename)}`
     }
 
-    // merge with any other config fields passed as JSON string
-    // if body.config is present and is JSON, try to merge
-    if (body.config) {
-      try {
-        const parsed = typeof body.config === 'string' ? JSON.parse(body.config) : body.config
-        Object.assign(payload, parsed)
-      } catch (err) {
-        // ignore parse error
-      }
+    // Validate with Zod to prevent unexpected fields
+    const parsed = StoreConfigSchema.safeParse(input)
+    if (!parsed.success) {
+      const err = new Error('Invalid store configuration payload')
+      err.status = 400
+      err.errorCode = 'INVALID_PAYLOAD'
+      err.meta = parsed.error.format()
+      return next(err)
     }
 
-    const { old, config } = await storeConfigService.upsert(payload)
+    const { old, config } = await storeConfigService.upsert(parsed.data)
 
-    // if logo/banner changed, remove previous file(s)
+    // cleanup old uploads if needed
     const { removeUpload } = require('../utils/fileUtils')
     if (old) {
-      if (old.logo && payload.logo && old.logo !== payload.logo) {
-        removeUpload(old.logo).catch(err => {
-          console.error('❌ [STORE CONFIG] Failed to remove old logo:', err.message)
-        })
+      if (old.logo && parsed.data.logo && old.logo !== parsed.data.logo) {
+        removeUpload(old.logo).catch(e => logger.warn('Failed to remove old logo: %o', e))
       }
-      if (old.banner && payload.banner && old.banner !== payload.banner) {
-        removeUpload(old.banner).catch(err => {
-          console.error('❌ [STORE CONFIG] Failed to remove old banner:', err.message)
-        })
+      if (old.banner && parsed.data.banner && old.banner !== parsed.data.banner) {
+        removeUpload(old.banner).catch(e => logger.warn('Failed to remove old banner: %o', e))
       }
     }
 
-    res.json({ success: true, config })
+    return res.json({ success: true, config })
   } catch (err) {
-    console.error('❌ [STORE CONFIG] UPDATE error:', err.message)
-    res.status(500).json({ success: false, message: 'Failed to update store configuration' })
+    return next(err)
   }
 }
 
