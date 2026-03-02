@@ -2,7 +2,11 @@ import api from './api'
 
 export async function fetchStoreConfig() {
   const res = await api.get('/api/store-config');
-  const cfg = res?.data?.config;
+  const payload = res?.data;
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('fetchStoreConfig: invalid response from server');
+  }
+  const cfg = payload.data || payload.config;
   if (!cfg || typeof cfg !== 'object') {
     throw new Error('fetchStoreConfig: invalid config received from server');
   }
@@ -25,7 +29,11 @@ export async function updateStoreConfig(config) {
     res = await api.put('/api/store-config', config)
   }
 
-  const cfg = res?.data?.config;
+  const payload = res?.data;
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('updateStoreConfig: invalid response from server');
+  }
+  const cfg = payload.data || payload.config;
   if (!cfg || typeof cfg !== 'object') {
     throw new Error('updateStoreConfig: invalid config received from server');
   }

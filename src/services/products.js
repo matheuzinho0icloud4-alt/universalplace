@@ -2,12 +2,17 @@ import api from './api';
 
 export async function fetchProducts() {
   const res = await api.get('/products');
-  const data = res?.data;
-  if (!Array.isArray(data)) {
-    console.warn('fetchProducts expected array but got', data);
+  const payload = res?.data;
+  if (!payload || typeof payload !== 'object') {
+    console.warn('fetchProducts: invalid response', payload);
     return [];
   }
-  return data;
+  const products = payload.data || payload.products;
+  if (!Array.isArray(products)) {
+    console.warn('fetchProducts: data is not array', products);
+    return [];
+  }
+  return products;
 }
 
 function _assertProductPayload(payload) {
@@ -24,7 +29,7 @@ export async function createProduct({ name, link_oferta }, imageFile) {
   if (imageFile) form.append('image', imageFile);
 
   const res = await api.post('/products', form);
-  return res.data;
+  return res.data?.data || res.data;
 }
 
 export async function updateProductApi(id, { name, link_oferta }, imageFile) {
@@ -35,7 +40,7 @@ export async function updateProductApi(id, { name, link_oferta }, imageFile) {
   if (imageFile) form.append('image', imageFile);
 
   const res = await api.put(`/products/${id}`, form);
-  return res.data;
+  return res.data?.data || res.data;
 }
 
 export async function deleteProductApi(id) {
@@ -43,5 +48,5 @@ export async function deleteProductApi(id) {
     throw new TypeError('deleteProductApi requires an id');
   }
   const res = await api.delete(`/products/${id}`);
-  return res.data;
+  return res.data?.data || res.data;
 }

@@ -16,7 +16,7 @@ async function create(req, res, next) {
     
     const prod = await productService.create({ name, image, link_oferta }, req.user.id)
     logger.info('Product created: %s by user %s', prod.id, req.user?.id)
-    res.json({ success: true, product: prod })
+    res.status(201).json({ success: true, data: prod, message: 'Product created successfully' })
   } catch (err) {
     logger.error('CREATE error: %o', err)
     next(err)
@@ -38,7 +38,7 @@ async function list(req, res, next) {
     // images are generated dynamically so this step is unnecessary.
     // prods = prods.map(p => p); // no-op
 
-    res.json({ success: true, products: prods })
+    res.json({ success: true, data: prods })
   } catch (err) {
     logger.error('LIST error: %o', err)
     next(err)
@@ -74,7 +74,7 @@ async function update(req, res, next) {
     }
 
     logger.info('Product updated: %s', updated.id)
-    res.json({ success: true, product: updated })
+    res.json({ success: true, data: updated, message: 'Product updated successfully' })
   } catch (err) {
     logger.error('UPDATE error: %o', err)
     next(err)
@@ -99,7 +99,7 @@ async function remove(req, res, next) {
     }
 
     logger.info('Product %s deleted', req.params.id)
-    res.json({ success: true })
+    res.json({ success: true, data: null, message: 'Product deleted successfully' })
   } catch (err) {
     logger.error('DELETE error: %o', err)
     next(err)

@@ -1,6 +1,7 @@
 
 const { Pool } = require("pg")
 const config = require("./config")
+const logger = require('./utils/logger')
 
 /**
  * Configure Pool with SSL support for production environments (Render, etc.)
@@ -48,13 +49,13 @@ async function initializeDatabase() {
   
   try {
     // Test connection
-    console.log('[DB] Testing PostgreSQL connection...')
+    logger.info('[DB] Testing PostgreSQL connection...')
     client = await pool.connect()
     const result = await client.query('SELECT NOW()')
-    console.log('✅ [DB] PostgreSQL connection successful')
+    logger.info('✅ [DB] PostgreSQL connection successful')
     client.release()
   } catch (err) {
-    console.error('❌ [DB] Failed to connect to PostgreSQL:', err.message)
+    logger.error('❌ [DB] Failed to connect to PostgreSQL: %o', err)
     if (client) client.release()
     throw new Error(`Database connection failed: ${err.message}`)
   }
@@ -69,7 +70,7 @@ async function initializeDatabase() {
         role TEXT DEFAULT 'user'
       )
     `)
-    console.log('✅ [DB] Users table ready')
+    logger.info('✅ [DB] Users table ready')
 
     // Add role column if missing (migration for existing databases)
     const userColumnsCheck = await pool.query(`
@@ -77,9 +78,9 @@ async function initializeDatabase() {
       WHERE table_name='users' AND column_name='role'
     `)
     if (userColumnsCheck.rows.length === 0) {
-      console.warn('⚠️ [DB] role column missing from users table! Adding...')
+      logger.warn('⚠️ [DB] role column missing from users table! Adding...')
       await pool.query('ALTER TABLE users ADD COLUMN role TEXT DEFAULT \'user\'')
-      console.log('✅ [DB] role column added to users table')
+      logger.info('✅ [DB] role column added to users table')
     }
 
     await pool.query(`
@@ -91,7 +92,7 @@ async function initializeDatabase() {
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
       )
     `)
-    console.log('✅ [DB] Products table ready')
+    logger.info('✅ [DB] Products table ready')
 
     // store_config table: single-row JSON config (id = 1)
     await pool.query(`
@@ -101,7 +102,7 @@ async function initializeDatabase() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
       )
     `)
-    console.log('✅ [DB] Store config table ready')
+    logger.info('✅ [DB] Store config table ready')
 
     // Ensure a single row exists (id = 1) with default config
     const res = await pool.query("SELECT COUNT(*)::int AS cnt FROM store_config")
@@ -113,7 +114,7 @@ async function initializeDatabase() {
         socialMedia: { instagram: '', facebook: '', whatsapp: '' }
       }
       await pool.query('INSERT INTO store_config (id, config) VALUES (1, $1)', [defaultConfig])
-      console.log('✅ [DB] Inserted default store_config (id=1)')
+      logger.info('✅ [DB] Inserted default store_config (id=1)')
     }
 
     // Verify columns exist
@@ -123,23 +124,23 @@ async function initializeDatabase() {
       ORDER BY column_name
     `)
     const columns = columnsCheck.rows.map(r => r.column_name)
-    console.log('📋 [DB] Products columns:', columns.join(', '))
+    logger.info('📋 [DB] Products columns: %s', columns.join(', '))
 
     // Verify link_oferta exists
     if (!columns.includes('link_oferta')) {
-      console.warn('⚠️ [DB] link_oferta column missing! Running migration...')
+      logger.warn('⚠️ [DB] link_oferta column missing! Running migration...')
       await pool.query('ALTER TABLE products ADD COLUMN IF NOT EXISTS link_oferta TEXT')
-      console.log('✅ [DB] link_oferta column added')
+      logger.info('✅ [DB] link_oferta column added')
     }
 
     // Create indexes for better query performance
     await pool.query("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
     await pool.query("CREATE INDEX IF NOT EXISTS idx_products_user ON products(user_id)")
-    console.log('✅ [DB] Indexes created')
+    logger.info('✅ [DB] Indexes created')
 
-    console.log('✅ [DB] Database initialization completed successfully')
+    logger.info('✅ [DB] Database initialization completed successfully')
   } catch (err) {
-    console.error('❌ [DB] Database initialization failed:', err.message)
+    logger.error('❌ [DB] Database initialization failed: %o', err)
     throw new Error(`Database initialization failed: ${err.message}`)
   }
 }
@@ -150,9 +151,9 @@ async function initializeDatabase() {
 async function closeDatabase() {
   try {
     await pool.end()
-    console.log('✅ [DB] Connection pool closed')
+    logger.info('✅ [DB] Connection pool closed')
   } catch (err) {
-    console.error('❌ [DB] Error closing connection pool:', err.message)
+    logger.error('❌ [DB] Error closing connection pool: %o', err)
   }
 }
 
@@ -173,7 +174,7 @@ async function ensureAdminUser() {
     )
 
     if (existingAdmin.rows.length > 0) {
-      console.log('✅ [DB] Admin user already exists')
+      logger.info('✅ [DB] Admin user already exists')
       return
     }
 
@@ -182,9 +183,9 @@ async function ensureAdminUser() {
       'INSERT INTO users (email, password, role) VALUES ($1, $2, $3)',
       [adminEmail, adminPasswordHash, 'admin']
     )
-    console.log('✅ [DB] Admin user created successfully')
+    logger.info('✅ [DB] Admin user created successfully')
   } catch (err) {
-    console.error('❌ [DB] Failed to ensure admin user:', err.message)
+    logger.error('❌ [DB] Failed to ensure admin user: %o', err)
     throw new Error(`Admin user setup failed: ${err.message}`)
   }
 }

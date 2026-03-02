@@ -17,7 +17,7 @@ const StoreConfigSchema = z.object({
 async function getConfig(req, res, next) {
   try {
     const cfg = await storeConfigService.get()
-    return res.json({ success: true, config: cfg })
+    return res.json({ success: true, data: cfg })
   } catch (err) {
     return next(err)
   }
@@ -73,7 +73,7 @@ async function updateConfig(req, res, next) {
       }
     }
 
-    return res.json({ success: true, config })
+    return res.json({ success: true, data: config, message: 'Store config updated successfully' })
   } catch (err) {
     return next(err)
   }

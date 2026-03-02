@@ -16,7 +16,7 @@ async function login(req, res, next) {
     })
 
     // return standard success response
-    res.json({ success: true, user: result.user })
+    res.json({ success: true, data: result.user, message: 'Login successful' })
   } catch (err) {
     next(err)
   }
@@ -46,7 +46,7 @@ async function getCurrentUser(req, res, next) {
       return next(err)
     }
 
-    res.json({ success: true, user: { id: req.user.id, email: req.user.email, role: req.user.role || 'user' } })
+    res.json({ success: true, data: { id: req.user.id, email: req.user.email, role: req.user.role || 'user' } })
   } catch (err) {
     next(err)
   }
