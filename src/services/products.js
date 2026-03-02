@@ -2,16 +2,16 @@ import api from './api';
 
 export async function fetchProducts() {
   try {
-    const { data: response } = await api.get('/products');
-    // Response structure: { success: true, data: [...] }
-    const products = response?.data;
+    const response = await api.get('/products');
+    const products = response?.data?.data || [];
+
     if (!Array.isArray(products)) {
-      console.debug('fetchProducts: response.data is not array, returning []', products);
+      console.warn('fetchProducts: expected array, got', typeof products);
       return [];
     }
     return products;
   } catch (err) {
-    console.error('fetchProducts: error fetching products', err.message);
+    // failure simply returns empty array
     return [];
   }
 }
@@ -29,9 +29,9 @@ export async function createProduct({ name, link_oferta }, imageFile) {
   form.append('link_oferta', link_oferta || '');
   if (imageFile) form.append('image', imageFile);
 
-  const { data: response } = await api.post('/products', form);
+  const response = await api.post('/products', form);
   // Response structure: { success: true, data: product }
-  return response?.data;
+  return response?.data?.data;
 }
 
 export async function updateProductApi(id, { name, link_oferta }, imageFile) {
@@ -41,16 +41,16 @@ export async function updateProductApi(id, { name, link_oferta }, imageFile) {
   form.append('link_oferta', link_oferta || '');
   if (imageFile) form.append('image', imageFile);
 
-  const { data: response } = await api.put(`/products/${id}`, form);
+  const response = await api.put(`/products/${id}`, form);
   // Response structure: { success: true, data: product }
-  return response?.data;
+  return response?.data?.data;
 }
 
 export async function deleteProductApi(id) {
   if (id === undefined || id === null) {
     throw new TypeError('deleteProductApi requires an id');
   }
-  const { data: response } = await api.delete(`/products/${id}`);
+  const response = await api.delete(`/products/${id}`);
   // Response structure: { success: true, data: null }
-  return response?.data;
+  return response?.data?.data;
 }

@@ -22,7 +22,7 @@ function Layout({ children }) {
           socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
         };
         if (mounted) setStoreConfig(fullCfg);
-      } catch (err) {
+      } catch {
         // fallback defaults when config fails to load
         if (mounted) {
           setStoreConfig({ 
@@ -31,7 +31,6 @@ function Layout({ children }) {
             banner: '', 
             socialMedia: { instagram: '', facebook: '', whatsapp: '' } 
           });
-          console.warn('Layout: failed to load store config, using defaults', err?.message);
         }
       }
     })();

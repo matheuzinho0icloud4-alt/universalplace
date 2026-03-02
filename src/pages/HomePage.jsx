@@ -30,7 +30,7 @@ const HomePage = () => {
         socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
       };
       setStoreConfig(fullCfg);
-    } catch (err) {
+    } catch {
       // fallback to default if API fails
       setStoreConfig({ 
         name: 'Ofertas Universal Place', 
@@ -38,7 +38,6 @@ const HomePage = () => {
         banner: '', 
         socialMedia: { instagram: '', facebook: '', whatsapp: '' } 
       });
-      console.warn('HomePage: failed to load store config', err?.message);
     }
     try {
       const prods = await fetchProducts();

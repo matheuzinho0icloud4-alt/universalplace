@@ -13,9 +13,9 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: response } = await api.get('/auth/me')
-        // Response structure: { success: true, data: user }
-        const user = response?.data
+        const response = await api.get('/auth/me')
+        // Response structure: { data: { success: true, data: user } }
+        const user = response?.data?.data
         if (user && typeof user === 'object') {
           setCurrentUser(user)
         } else {
@@ -35,11 +35,11 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     setLoading(true)
     try {
-      // POST to /auth/login sets httpOnly cookie. Response: { success: true, data: user }
+      // POST to /auth/login sets httpOnly cookie
       await api.post('/auth/login', { email, password })
-      const { data: response } = await api.get('/auth/me')
-      // Response structure: { success: true, data: user }
-      const user = response?.data
+      const response = await api.get('/auth/me')
+      // Response structure: { data: { success: true, data: user } }
+      const user = response?.data?.data
       if (user && typeof user === 'object') {
         setCurrentUser(user)
         return true

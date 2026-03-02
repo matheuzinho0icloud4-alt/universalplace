@@ -32,8 +32,8 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
         if (mounted && loaded && typeof loaded === 'object') {
           setFormData(loaded);
         }
-      } catch (err) {
-        console.warn('Failed to load store config:', err?.message);
+      } catch {
+        // ignore
       }
     })();
     return () => {
@@ -144,7 +144,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
       }
 
       if (!updated || typeof updated !== 'object') {
-        console.warn('updateStoreConfig returned unexpected value:', updated);
+        return;
       }
 
       // Call parent callback with updated config
@@ -152,8 +152,8 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
         if (typeof onUpdate === 'function') {
           onUpdate(updated);
         }
-      } catch (err) {
-        console.warn('StoreSettingsForm: onUpdate raised error', err);
+      } catch {
+        // ignore callback errors
       }
 
       toast({
@@ -176,7 +176,6 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
       setLogoFile(null);
       setBannerFile(null);
     } catch (err) {
-      console.error('Failed to save settings:', err);
       toast({
         title: 'Error',
         description: err?.message || 'Failed to save settings',

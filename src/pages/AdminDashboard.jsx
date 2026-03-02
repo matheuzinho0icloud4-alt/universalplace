@@ -32,14 +32,8 @@ const AdminDashboard = () => {
   const fetchData = React.useCallback(async () => {
     setLoading(true);
     try {
-      // local util always returns object, but guard anyway
       const cfg = getStoreConfig();
-      if (cfg && typeof cfg === 'object') {
-        setStoreConfig(cfg);
-      } else {
-        console.warn('AdminDashboard: getStoreConfig returned unexpected value', cfg);
-        setStoreConfig(null);
-      }
+      setStoreConfig(cfg);
 
       const prods = await fetchProducts();
       setProducts(Array.isArray(prods) ? prods : []);
@@ -59,8 +53,6 @@ const AdminDashboard = () => {
   const handleSettingsUpdate = React.useCallback(() => {
     if (typeof fetchData === 'function') {
       fetchData();
-    } else {
-      console.error('AdminDashboard: handleSettingsUpdate - fetchData is not a function', typeof fetchData);
     }
   }, [fetchData]);
 
