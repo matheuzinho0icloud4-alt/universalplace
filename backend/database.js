@@ -144,6 +144,31 @@ async function initializeDatabase() {
       logger.info('✅ [DB] link_oferta column added')
     }
 
+    // Migration: Add new optional columns (description, product_link) if missing
+    if (!columns.includes('description')) {
+      logger.warn('⚠️ [DB] description column missing! Adding...')
+      await pool.query('ALTER TABLE products ADD COLUMN IF NOT EXISTS description TEXT')
+      logger.info('✅ [DB] description column added')
+    }
+    if (!columns.includes('product_link')) {
+      logger.warn('⚠️ [DB] product_link column missing! Adding...')
+      await pool.query('ALTER TABLE products ADD COLUMN IF NOT EXISTS product_link TEXT')
+      logger.info('✅ [DB] product_link column added')
+    }
+
+    // Data migration: copy existing link_oferta values into product_link when appropriate
+    if (columns.includes('link_oferta')) {
+      logger.info('🔄 [DB] migrating data from link_oferta to product_link (if needed)')
+      await pool.query(`
+        UPDATE products
+        SET product_link = link_oferta
+        WHERE product_link IS NULL AND link_oferta IS NOT NULL
+      `)
+      logger.info('✅ [DB] Data migration completed')
+    } else {
+      logger.info('ℹ️ [DB] link_oferta column missing; skipping data migration')
+    }
+
     // Create indexes for better query performance
     await pool.query("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
     await pool.query("CREATE INDEX IF NOT EXISTS idx_products_user ON products(user_id)")
