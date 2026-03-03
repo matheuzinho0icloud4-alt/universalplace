@@ -19,7 +19,6 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
     }
   });
   const [loading, setLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   // Load store config on mount
