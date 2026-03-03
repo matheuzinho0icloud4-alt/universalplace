@@ -16,7 +16,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
     product_link: '',
     description: ''
   });
-  const [errors, setErrors] = useState({});
+  
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
