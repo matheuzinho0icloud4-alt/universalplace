@@ -75,17 +75,17 @@ const AdminDashboard = () => {
     setIsProductFormOpen(true);
   };
 
-  const handleProductSubmit = async (productData, file) => {
+  const handleProductSubmit = async (productData) => {
     setLoading(true);
     try {
       if (editingProduct) {
-        await updateProductApi(editingProduct.id, productData, file);
+        await updateProductApi(editingProduct.id, productData);
         toast({
           title: 'Product updated',
           description: 'Product has been updated successfully.',
         });
       } else {
-        await createProduct(productData, file);
+        await createProduct(productData);
         toast({
           title: 'Product added',
           description: 'New product has been added successfully.',
@@ -216,11 +216,16 @@ const AdminDashboard = () => {
                         {products.map((product) => (
                           <TableRow key={product.id}>
                             <TableCell>
-                              <img 
-                                src={product.image ? encodeURI(product.image) : ''} 
-                                alt={product.name}
-                                className="w-16 h-16 object-cover rounded"
-                              />
+                                {product.image ? (
+                                  <img
+                                    src={encodeURI(product.image)}
+                                    alt={product.name}
+                                    className="w-16 h-16 object-cover rounded"
+                                    onError={(e) => { e.target.style.display = 'none' }}
+                                  />
+                                ) : (
+                                  <div className="w-16 h-16 bg-gray-100 flex items-center justify-center text-gray-400 rounded">No image</div>
+                                )}
                             </TableCell>
                             <TableCell className="max-w-xs">
                               <p className="line-clamp-2 font-semibold">{product.name}</p>

@@ -2,8 +2,8 @@
 
 const DEFAULT_CONFIG = {
   name: 'Ofertas Universal Place',
-  logo: '',
-  banner: 'https://images.unsplash.com/photo-1674027392842-29f8354e236c',
+  logo_url: '',
+  banner_url: 'https://images.unsplash.com/photo-1674027392842-29f8354e236c',
   socialMedia: {
     instagram: '',
     facebook: '',

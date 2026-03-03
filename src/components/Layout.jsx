@@ -17,8 +17,8 @@ function Layout({ children }) {
         // Ensure cfg has all required properties with defaults
         const fullCfg = {
           name: cfg?.name || 'Ofertas Universal Place',
-          logo: cfg?.logo || '',
-          banner: cfg?.banner || '',
+          logo: cfg?.logo_url || cfg?.logo || '',
+          banner: cfg?.banner_url || cfg?.banner || '',
           socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
         };
         if (mounted) setStoreConfig(fullCfg);

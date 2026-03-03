@@ -5,8 +5,8 @@ const logger = require('../utils/logger')
 
 const StoreConfigSchema = z.object({
   name: z.string().min(1).optional(),
-  logo: z.string().url().optional(),
-  banner: z.string().url().optional(),
+  logo_url: z.string().url().optional(),
+  banner_url: z.string().url().optional(),
   socialMedia: z.object({
     instagram: z.string().optional(),
     facebook: z.string().optional(),
@@ -27,27 +27,16 @@ async function updateConfig(req, res, next) {
   try {
     // Build input object from allowed fields only
     const body = req.body || {}
-    const files = req.files || {}
-
-    const base = appConfig.baseUrl || `${req.protocol}://${req.get('host')}`
 
     const input = {
       name: body.name || undefined,
-      logo: body.logo || undefined,
-      banner: body.banner || undefined,
+      logo_url: body.logo_url || body.logo || undefined,
+      banner_url: body.banner_url || body.banner || undefined,
       socialMedia: {
         instagram: body.instagram || undefined,
         facebook: body.facebook || undefined,
         whatsapp: body.whatsapp || undefined,
       }
-    }
-
-    // handle uploaded files
-    if (files.logo && files.logo[0]) {
-      input.logo = `${base}/uploads/${encodeURIComponent(files.logo[0].filename)}`
-    }
-    if (files.banner && files.banner[0]) {
-      input.banner = `${base}/uploads/${encodeURIComponent(files.banner[0].filename)}`
     }
 
     // Validate with Zod to prevent unexpected fields
@@ -62,16 +51,7 @@ async function updateConfig(req, res, next) {
 
     const { old, config } = await storeConfigService.upsert(parsed.data)
 
-    // cleanup old uploads if needed
-    const { removeUpload } = require('../utils/fileUtils')
-    if (old) {
-      if (old.logo && parsed.data.logo && old.logo !== parsed.data.logo) {
-        removeUpload(old.logo).catch(e => logger.warn('Failed to remove old logo: %o', e))
-      }
-      if (old.banner && parsed.data.banner && old.banner !== parsed.data.banner) {
-        removeUpload(old.banner).catch(e => logger.warn('Failed to remove old banner: %o', e))
-      }
-    }
+    // no local file cleanup required (images are external URLs)
 
     return res.json({ success: true, data: config, message: 'Store config updated successfully' })
   } catch (err) {

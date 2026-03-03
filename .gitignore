@@ -20,10 +20,8 @@ dist/
 build/
 
 # =========================
-# UPLOADS (NÃO VERSIONAR)
+# UPLOADS (removido — sistema usa URLs externas)
 # =========================
-uploads/
-backend/uploads/
 
 # =========================
 # LOGS

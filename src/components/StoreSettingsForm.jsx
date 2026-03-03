@@ -10,16 +10,15 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
-    logo: '',
-    banner: '',
+    logo_url: '',
+    banner_url: '',
     socialMedia: {
       instagram: '',
       facebook: '',
       whatsapp: ''
     }
   });
-  const [logoFile, setLogoFile] = useState(null);
-  const [bannerFile, setBannerFile] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -30,7 +29,13 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
       try {
         const loaded = await fetchStoreConfig();
         if (mounted && loaded && typeof loaded === 'object') {
-          setFormData(loaded);
+          // normalize older keys (logo/banner) to logo_url/banner_url
+          const normalized = {
+            ...loaded,
+            logo_url: loaded.logo_url || loaded.logo || '',
+            banner_url: loaded.banner_url || loaded.banner || '',
+          }
+          setFormData(normalized);
         }
       } catch {
         // ignore
@@ -41,28 +46,9 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
     };
   }, []);
 
-  const handleImageUpload = (e, field) => {
-    const file = e?.target?.files?.[0];
-    if (!file) return;
-
-    if (file && typeof file.size === 'number' && file.size > 5_000_000) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: 'Image size must be less than 5MB'
-      }));
-      return;
-    }
-
-    const url = URL.createObjectURL(file);
-    setFormData(prev => ({ ...prev, [field]: url }));
-
-    if (field === 'logo') {
-      setLogoFile(file);
-    } else if (field === 'banner') {
-      setBannerFile(file);
-    }
-
-    setErrors(prev => ({ ...prev, [field]: '' }));
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
   const handleSocialMediaChange = (platform, value) => {
@@ -118,30 +104,14 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
     try {
       let updated;
 
-      // If there are files, send as multipart/form-data
-      if (logoFile || bannerFile) {
-        const fd = new FormData();
-        fd.append('name', formData.name || '');
-        fd.append('instagram', formData.socialMedia.instagram || '');
-        fd.append('facebook', formData.socialMedia.facebook || '');
-        fd.append('whatsapp', formData.socialMedia.whatsapp || '');
-        // preserve existing remote URLs if no new file was uploaded
-        if (formData.logo && !logoFile) fd.append('logo', formData.logo);
-        if (formData.banner && !bannerFile) fd.append('banner', formData.banner);
-        if (logoFile) fd.append('logo', logoFile, logoFile.name);
-        if (bannerFile) fd.append('banner', bannerFile, bannerFile.name);
-
-        updated = await updateStoreConfig(fd);
-      } else {
-        // JSON path
-        const payload = {
-          name: formData.name,
-          logo: formData.logo,
-          banner: formData.banner,
-          socialMedia: formData.socialMedia
-        };
-        updated = await updateStoreConfig(payload);
+      const payload = {
+        name: formData.name,
+        logo_url: formData.logo_url,
+        banner_url: formData.banner_url,
+        socialMedia: formData.socialMedia
       }
+
+      updated = await updateStoreConfig(payload);
 
       if (!updated || typeof updated !== 'object') {
         return;
@@ -166,15 +136,12 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
         setFormData(prev => ({
           ...prev,
           name: updated.name || prev.name,
-          logo: updated.logo || prev.logo,
-          banner: updated.banner || prev.banner,
+          logo_url: updated.logo_url || updated.logo || prev.logo_url,
+          banner_url: updated.banner_url || updated.banner || prev.banner_url,
           socialMedia: updated.socialMedia || prev.socialMedia
         }))
       }
-
-      // Clear file objects
-      setLogoFile(null);
-      setBannerFile(null);
+      // no files to clear
     } catch (err) {
       toast({
         title: 'Error',
@@ -209,51 +176,55 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
             )}
           </div>
 
-          {/* Logo */}
+          {/* Logo URL */}
           <div>
-            <Label htmlFor="logo">Logo</Label>
+            <Label htmlFor="logo_url">Logo URL</Label>
             <Input
-              id="logo"
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e, 'logo')}
-              className="mt-1"
+              id="logo_url"
+              type="text"
+              placeholder="Cole a URL da logo"
+              value={formData.logo_url}
+              onChange={(e) => handleInputChange('logo_url', e.target.value)}
+              className="mt-1 text-gray-900"
               disabled={loading}
             />
-            {errors.logo && (
-              <p className="text-sm text-red-500 mt-1">{errors.logo}</p>
+            {errors.logo_url && (
+              <p className="text-sm text-red-500 mt-1">{errors.logo_url}</p>
             )}
-            {formData.logo && (
+            {formData.logo_url && (
               <div className="mt-3">
                 <img
-                  src={formData.logo}
+                  src={formData.logo_url}
                   alt="Logo preview"
                   className="h-20 object-contain"
+                  onError={(e) => { e.target.style.display = 'none' }}
                 />
               </div>
             )}
           </div>
 
-          {/* Banner */}
+          {/* Banner URL */}
           <div>
-            <Label htmlFor="banner">Banner Image</Label>
+            <Label htmlFor="banner_url">Banner URL</Label>
             <Input
-              id="banner"
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e, 'banner')}
-              className="mt-1"
+              id="banner_url"
+              type="text"
+              placeholder="Cole a URL do banner"
+              value={formData.banner_url}
+              onChange={(e) => handleInputChange('banner_url', e.target.value)}
+              className="mt-1 text-gray-900"
               disabled={loading}
             />
-            {errors.banner && (
-              <p className="text-sm text-red-500 mt-1">{errors.banner}</p>
+            {errors.banner_url && (
+              <p className="text-sm text-red-500 mt-1">{errors.banner_url}</p>
             )}
-            {formData.banner && (
+            {formData.banner_url && (
               <div className="mt-3">
                 <img
-                  src={formData.banner}
+                  src={formData.banner_url}
                   alt="Banner preview"
                   className="w-full h-32 object-cover rounded-md"
+                  onError={(e) => { e.target.style.display = 'none' }}
                 />
               </div>
             )}

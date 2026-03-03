@@ -72,17 +72,16 @@ Admin Login:     http://localhost:3000/admin/login
 1. Em /admin/dashboard
 2. Clicar botão azul "Add New Product"
 3. Preencher:
-   - Selecionar imagem (obrigatório)
-   - Nome: "Produto Teste"
-   - Link da Oferta: "https://example.com" (opcional)
+  - URL da imagem (obrigatório) — cole a URL externa da imagem
+  - Nome: "Produto Teste"
+  - Link da Oferta: "https://example.com" (opcional)
 4. Clicar "Add Product"
 5. Noti toast "Product added" deve aparecer
 ✅ Produto deve aparecer na tabela
 
 Terminal backend deve exibir:
-📦 [CREATE] Body received: { name: 'Produto Teste', link_oferta: 'https://example.com' }
-📷 [CREATE] Image: http://localhost:3003/uploads/...
-💾 [REPO] INSERT products: { name, user_id, image, link_oferta }
+📦 [CREATE] Body received: { name: 'Produto Teste', image: '<image-url>', product_link: 'https://example.com' }
+💾 [REPO] INSERT products: { name, user_id, image, product_link }
 ✅ [REPO] Product inserted, ID: 1
 ✅ [CREATE] Product created: 1
 ```
@@ -198,24 +197,20 @@ Solução:
 ### Se imagem não aparece:
 
 ```
-1. Verificar se arquivo foi salvo em /backend/uploads/
-2. Verificar console (F12) → Network → requests de imagem
-3. Ver URL: http://localhost:3003/uploads/FILENAME
-4. Se não carregar, aguarde a requisição completar
+1. Verificar console (F12) → Network → requests de imagem
+2. Confirmar que o `src` da imagem é uma URL válida externa
+3. Se não carregar, verifique a URL da imagem fornecida
+```bash
+# 1. Database (no PostgreSQL)
+-- Query Tool
+DELETE FROM products;
+DELETE FROM users;
+
+-- Ou recriar:
+DROP TABLE products CASCADE;
+DROP TABLE users CASCADE;
+-- O backend recria automaticamente na próxima inicialização
 ```
-
----
-
-## 📊 LOGS IMPORTANTES
-
-### Backend (Terminal)
-
-```javascript
-// Na criação:
-📦 [CREATE] Body received: { name, link_oferta }
-📷 [CREATE] Image: http://localhost:3003/uploads/...
-💾 [REPO] INSERT products: ...
-✅ [REPO] Product inserted, ID: 1
 ✅ [CREATE] Product created: 1
 
 // Na listagem:
@@ -274,7 +269,7 @@ Response: { success: true }
 | "Column price does not exist" | Schema antigo | Executar MIGRACAO_SQL_SEGURA.sql |
 | "Erro 401" ao criar produto | Não está logado | Fazer login novamente |
 | "Erro 401" após F5 | Cookie perdido | Verificar CORS e autenticação |
-| Imagem não aparece | Arquivo não salvo | Verificar /backend/uploads/ |
+| Imagem não aparece | URL inválida ou inacessível | Verifique se a URL fornecida está correta |
 | "Cannot POST /products" | Rota não existe | Verificar /backend/routes/products.js |
 | Link "Ver Oferta" não abre | link_oferta vazio | Preencher campo com URL válida |
 
@@ -286,7 +281,7 @@ Response: { success: true }
 
 ```bash
 # 1. Backend
-rm -rf backend/uploads/*
+# (não há uploads locais; basta limpar o banco se necessário)
 
 # 2. Database (no PostgreSQL)
 -- Query Tool

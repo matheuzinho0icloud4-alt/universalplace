@@ -49,12 +49,17 @@ async function setupDatabase() {
       CREATE TABLE IF NOT EXISTS products (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
-        price NUMERIC NOT NULL,
         image TEXT,
+        description TEXT,
+        product_link TEXT,
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
       )
     `)
-    console.log("✓ products table created")
+    console.log("✓ products table created (ensured columns: name, image, description, product_link, user_id)")
+
+    // ensure migration: add columns if older schema is missing them
+    await mainClient.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS description TEXT")
+    await mainClient.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS product_link TEXT")
 
     // Create indexes
     await mainClient.query("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")

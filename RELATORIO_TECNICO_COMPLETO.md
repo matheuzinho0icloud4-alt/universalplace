@@ -236,28 +236,18 @@ CORS_ORIGIN=http://localhost:3000,https://universalplace.com
 - Se origem única → string direta
 - `withCredentials` habilitada (requer credenciais nas requisições)
 
-### 📸 Upload de Imagens - Multer
+### 📸 Imagens — URLs externas
 
-**Arquivo:** `backend/routes/products.js` (linhas ~9-20)
+O sistema foi refatorado para **não aceitar uploads de arquivos locais**. Em vez disso as imagens (produto, logo, banner)
+devem ser fornecidas como URLs externas no payload JSON.
 
-**Configuração:**
-```javascript
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    const safeName = file.originalname
-      .replace(/[^a-zA-Z0-9.-]/g, "_")
-      .replace(/_+/g, "_");
-    cb(null, `${Date.now()}-${safeName}`);
-  },
-})
-```
+Padrão das chamadas:
+- `POST /products` — body JSON: `{ name, image, description, product_link }`
+- `PUT /products/:id` — body JSON: `{ name, image, description, product_link }`
+- `GET /api/store-config` — retorna `logo_url` e `banner_url` (strings)
+- `PUT /api/store-config` — body JSON: `{ name, logo_url, banner_url, socialMedia }`
 
-**Endpoints com upload:**
-- `POST /products` → `upload.single("image")`
-- `PUT /products/:id` → `upload.single("image")`
-
-**Armazenamento:** Local `/backend/uploads/`  
+Não existe mais armazenamento local em `/backend/uploads`; qualquer lógica de arquivo local foi removida.
 **Convenção filename:** `{timestamp}-{sanitized-name}`  
 **Exemplo:** `1709000456-product_photo.jpg`
 
@@ -575,20 +565,17 @@ const handleSubmit = async (e) => {
 }
 ```
 
-### 🖼️ Como Imagens São Enviadas
+### 🖼️ Como Imagens São Enviadas (atualizado)
 
-**ProductForm.jsx:**
-1. Input file `<input type="file" accept="image/*" />`
-2. On change: salva ref do arquivo em state
-3. On submit: append file em FormData
-4. Axios envia: `Content-Type: multipart/form-data` (automático)
-5. Backend multer extrai: `req.file`
-6. Gera URL pública: `http://backend/uploads/{filename}`
+Fluxo atual (após refactor):
+1. Formulário aceita **URL da imagem** em um campo de texto (ex.: `image` ou `logo_url`).
+2. No submit, o frontend envia JSON com `image` (string URL) — não usa FormData/multipart.
+3. O backend grava a string no banco (`products.image`, `store_config.logo_url`, `store_config.banner_url`).
+4. As imagens são carregadas no frontend diretamente pelo `src` do `img` com a URL fornecida.
 
-**Validações:**
-- Arquivo obrigatório
-- Apenas imagens (accept=image/*)
-- Sem validação de tamanho no frontend (apenas backend)
+Validações recomendadas:
+- Verificar que `image`/`logo_url` são URLs válidas no frontend e backend.
+- Fornecer fallback visual caso a URL não carregue.
 
 ### 🎨 UI & Estilização
 
@@ -843,7 +830,7 @@ BASE_URL=https://api.seu-dominio.com
 | **Frontend** | React 18 + Vite + Tailwind | ✅ | Baixo |
 | **Backend** | Express 4 + PostgreSQL | ✅ | Médio |
 | **Auth** | JWT + bcrypt + httpOnly | ✅ | Baixo |
-| **Upload** | Multer (local diskStorage) | ⚠️ | Alto |
+| **Images** | External URLs (no local storage) | ✅ | Baixo |
 | **Deploy** | Render (Backend) + Vercel (Frontend) | ✅ | Médio |
 | **CORS** | Dynamic baseado env var | ✅ | Médio |
 | **SSL/TLS** | Postgres SSL produção | ✅ | Baixo |

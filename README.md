@@ -6,7 +6,7 @@ Este repositório contém um agregador de ofertas com frontend em React/Vite e b
 
 - `src/` → código do frontend (Vite + React)
 - `backend/` → API Express, banco PostgreSQL
-- `uploads/` → diretório de arquivos enviados (imagem do produto, logo, banner)
+- Imagens: o sistema passou a usar **URLs externas** para imagens (produto, logo, banner); não há mais armazenamento local de uploads.
 
 ## Variáveis de ambiente
 
@@ -29,7 +29,7 @@ CORS_ORIGIN=https://seu-frontend.com
 VITE_API_URL=https://seu-backend.com
 ```
 
-O front-end injeta a variável `VITE_API_URL` em tempo de build. A API deve responder no URL configurado e também gerar URLs de imagem baseados no `req.protocol`/`req.get('host')` ou em `BASE_URL` se fornecido.
+O front-end injeta a variável `VITE_API_URL` em tempo de build. A API deve responder no URL configurado. As imagens são fornecidas como URLs externas e não dependem de arquivos locais.
 
 ## Scripts
 
@@ -53,13 +53,12 @@ No diretório `backend/` há também um `package.json` próprio para instalar de
 
 - Nenhum `localhost` fica no código; todas as URLs são derivadas de variáveis/requests.
 - CORS aceita origens configuradas via `CORS_ORIGIN` (pode ser lista separada por vírgulas).
-- Uploads continuam sendo armazenados em `/uploads`; a rota está servida por Express e pode ser substituída futuramente por S3, etc.
-- A limpeza automática de imagens em updates/deletes está preservada.
+- O sistema usa apenas URLs externas para imagens — não existe mais `/uploads` servido pelo backend.
 - Cookies JWT usam `secure` e `sameSite` apropriados para produção.
 
 ## Melhoria futura
 
-- Migrar `/uploads` para armazenamento externo sem alteração da API.
+- O sistema já foi refatorado para usar URLs externas para imagens (nenhum upload local).
 - Adicionar testes end‑to‑end para validar fluxo de uploads e autenticação.
 
 ---

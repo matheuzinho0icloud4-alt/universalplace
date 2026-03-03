@@ -231,8 +231,6 @@ universalplace/
 ├── public/
 ├── plugins/
 ├── tools/
-├── uploads/
-│
 ├── package.json
 ├── vite.config.js
 ├── jsconfig.json

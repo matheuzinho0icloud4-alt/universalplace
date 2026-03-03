@@ -22,27 +22,21 @@ function _assertProductPayload(payload) {
   }
 }
 
-export async function createProduct({ name, link_oferta }, imageFile) {
-  _assertProductPayload({ name, link_oferta });
-  const form = new FormData();
-  form.append('name', name);
-  form.append('link_oferta', link_oferta || '');
-  if (imageFile) form.append('image', imageFile);
-
-  const response = await api.post('/products', form);
-  // Response structure: { success: true, data: product }
+export async function createProduct({ name, image, description, product_link }) {
+  _assertProductPayload({ name });
+  const payload = { name, image, description, product_link };
+  const response = await api.post('/products', payload, {
+    headers: { 'Content-Type': 'application/json' }
+  });
   return response?.data?.data;
 }
 
-export async function updateProductApi(id, { name, link_oferta }, imageFile) {
-  _assertProductPayload({ name, link_oferta });
-  const form = new FormData();
-  form.append('name', name);
-  form.append('link_oferta', link_oferta || '');
-  if (imageFile) form.append('image', imageFile);
-
-  const response = await api.put(`/products/${id}`, form);
-  // Response structure: { success: true, data: product }
+export async function updateProductApi(id, { name, image, description, product_link }) {
+  _assertProductPayload({ name });
+  const payload = { name, image, description, product_link };
+  const response = await api.put(`/products/${id}`, payload, {
+    headers: { 'Content-Type': 'application/json' }
+  });
   return response?.data?.data;
 }
 

@@ -11,43 +11,31 @@ import { useToast } from '@/hooks/use-toast';
 const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    imagePreview: '',
+    image: '',
     name: '',
-    link_oferta: ''
+    product_link: '',
+    description: ''
   });
-  const [imageFile, setImageFile] = useState(null);
+  const [errors, setErrors] = useState({});
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (product) {
       setFormData({
-        imagePreview: product.image ? encodeURI(product.image) : '',
+        image: product.image ? product.image : '',
         name: product.name || '',
-        link_oferta: product.link_oferta || ''
+        product_link: product.product_link || product.link_oferta || '',
+        description: product.description || ''
       });
     } else {
-      setFormData({
-        imagePreview: '',
-        name: '',
-        link_oferta: ''
-      });
+      setFormData({ image: '', name: '', product_link: '', description: '' });
     }
-    setImageFile(null);
     setErrors({});
   }, [product, isOpen]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5000000) {
-        setErrors(prev => ({ ...prev, image: 'Image size must be less than 5MB' }));
-        return;
-      }
-      const url = URL.createObjectURL(file);
-      setFormData(prev => ({ ...prev, imagePreview: url }));
-      setImageFile(file);
-      setErrors(prev => ({ ...prev, image: '' }));
-    }
+  const handleImageUrlChange = (e) => {
+    setFormData(prev => ({ ...prev, image: e.target.value }));
+    if (errors.image) setErrors(prev => ({ ...prev, image: '' }));
   };
 
   const isValidUrl = (url) => {
@@ -61,17 +49,16 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
 
   const validate = () => {
     const newErrors = {};
-    
-    if (!imageFile && !formData.imagePreview) {
-      newErrors.image = 'Product image is required';
+    if (!formData.image || !isValidUrl(formData.image)) {
+      newErrors.image = 'Valid product image URL is required';
     }
     
     if (!formData.name.trim()) {
       newErrors.name = 'Product name is required';
     }
     
-    if (formData.link_oferta && !isValidUrl(formData.link_oferta)) {
-      newErrors.link_oferta = 'Invalid URL';
+    if (formData.product_link && !isValidUrl(formData.product_link)) {
+      newErrors.product_link = 'Invalid product link URL';
     }
     
     setErrors(newErrors);
@@ -82,8 +69,13 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
     e.preventDefault();
     
     if (validate()) {
-      const payload = { name: formData.name, link_oferta: formData.link_oferta };
-      onSubmit(payload, imageFile);
+      const payload = {
+        name: formData.name,
+        image: formData.image,
+        description: formData.description,
+        product_link: formData.product_link
+      };
+      onSubmit(payload);
       toast({
         title: product ? 'Product updated' : 'Product added',
         description: product ? 'Product has been updated successfully.' : 'New product has been added successfully.',
@@ -103,20 +95,22 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="image">Product Image</Label>
+            <Label htmlFor="image">Product Image URL</Label>
             <Input
               id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-1"
+              type="text"
+              placeholder="Cole a URL da imagem"
+              value={formData.image}
+              onChange={handleImageUrlChange}
+              className="mt-1 text-gray-900"
             />
             {errors.image && <p className="text-sm text-red-500 mt-1">{errors.image}</p>}
-            {formData.imagePreview && (
-              <img 
-                src={formData.imagePreview} 
-                alt="Preview" 
+            {formData.image && (
+              <img
+                src={formData.image}
+                alt="Preview"
                 className="mt-2 w-full h-32 object-cover rounded-md"
+                onError={(e) => { e.target.style.display = 'none' }}
               />
             )}
           </div>
@@ -135,19 +129,27 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
           </div>
 
           <div>
-            <Label htmlFor="link_oferta">Link da Oferta (opcional)</Label>
+            <Label htmlFor="product_link">Link do produto (opcional)</Label>
             <Input
-              id="link_oferta"
+              id="product_link"
               type="url"
-              value={formData.link_oferta}
-              onChange={(e) => setFormData(prev => ({ ...prev, link_oferta: e.target.value }))}
-              placeholder="https://exemplo.com/oferta"
+              value={formData.product_link}
+              onChange={(e) => setFormData(prev => ({ ...prev, product_link: e.target.value }))}
+              placeholder="https://exemplo.com/produto"
               className="mt-1 text-gray-900"
             />
-            {errors.link_oferta && <p className="text-sm text-red-500 mt-1">{errors.link_oferta}</p>}
-            {formData.link_oferta && (
-              <p className="text-xs text-green-600 mt-1">✓ URL válida</p>
-            )}
+            {errors.product_link && <p className="text-sm text-red-500 mt-1">{errors.product_link}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="description">Descrição (opcional)</Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              placeholder="Descrição do produto"
+              className="mt-1 text-gray-900"
+            />
           </div>
 
           <DialogFooter>

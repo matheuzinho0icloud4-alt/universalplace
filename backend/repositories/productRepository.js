@@ -1,11 +1,11 @@
 const { pool } = require("../database")
 const logger = require("../utils/logger")
 
-async function createProduct({ name, image, user_id, link_oferta }) {
-  logger.debug('INSERT products: %o', { name, user_id, image: !!image, link_oferta })
+async function createProduct({ name, image, description, product_link, user_id }) {
+  logger.debug('INSERT products: %o', { name, user_id, image: !!image, product_link })
   const res = await pool.query(
-    "INSERT INTO products (name, image, user_id, link_oferta) VALUES ($1, $2, $3, $4) RETURNING *",
-    [name, image, user_id, link_oferta]
+    "INSERT INTO products (name, image, description, product_link, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    [name, image, description, product_link, user_id]
   )
   logger.debug('Product inserted, ID: %s', res.rows[0]?.id)
   return res.rows[0]

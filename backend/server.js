@@ -59,7 +59,7 @@ app.use(globalLimiter)
 
 app.use(express.json())
 app.use(cookieParser())
-app.use("/uploads", express.static(path.join(__dirname, "uploads")))
+// No local uploads served. Images are expected to be external URLs.
 
 // routes
 app.use("/auth", require("./routes/auth"))

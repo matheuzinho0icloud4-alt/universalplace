@@ -25,8 +25,8 @@ const HomePage = () => {
       // Ensure cfg has all required properties with defaults
       const fullCfg = {
         name: cfg?.name || 'Ofertas Universal Place',
-        logo: cfg?.logo || '',
-        banner: cfg?.banner || '',
+        logo: cfg?.logo_url || cfg?.logo || '',
+        banner: cfg?.banner_url || cfg?.banner || '',
         socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
       };
       setStoreConfig(fullCfg);
@@ -132,24 +132,27 @@ const HomePage = () => {
                   >
                     <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                       <div className="h-64 overflow-hidden">
-                        <img 
-                          src={product.image ? encodeURI(product.image) : ''} 
-                          alt={product.name}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        />
+                        {product.image ? (
+                          <img
+                            src={encodeURI(product.image)}
+                            alt={product.name}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            onError={(e) => { e.target.style.display = 'none' }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">No image</div>
+                        )}
                       </div>
                       <div className="p-6">
                         <p className="text-gray-700 mb-4 font-semibold">{product.name}</p>
                         <Button
                           className="w-full"
                           onClick={() => {
-                            if (product.link_oferta) {
-                              window.open(product.link_oferta, '_blank');
+                            const link = product.product_link || product.link_oferta;
+                            if (link) {
+                              window.open(link, '_blank');
                             } else {
-                              toast({
-                                title: product.name,
-                                description: `Ver detalhes`,
-                              });
+                              toast({ title: product.name, description: `Ver detalhes` });
                             }
                           }}
                         >

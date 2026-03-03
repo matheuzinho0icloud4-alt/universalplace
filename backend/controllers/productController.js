@@ -4,17 +4,13 @@ const logger = require('../utils/logger')
 
 async function create(req, res, next) {
   try {
-    const { name, link_oferta } = req.body
-    logger.debug('CREATE body: %o', { name, link_oferta })
-    
-    // determine base for public URLs; prefer config.baseUrl if set (e.g. render secret)
-    const base = config.baseUrl || `${req.protocol}://${req.get('host')}`;
-    const image = req.file
-      ? `${base}/uploads/${encodeURIComponent(req.file.filename)}`
-      : null
-    logger.debug('CREATE image: %s', image)
-    
-    const prod = await productService.create({ name, image, link_oferta }, req.user.id)
+    const { name, image, description, product_link, link_oferta } = req.body
+    // accept both `product_link` and legacy `link_oferta` (prefer product_link)
+    const finalLink = product_link || link_oferta || null
+    logger.debug('CREATE body: %o', { name, image, description, product_link: finalLink })
+
+    // image is expected to be an external URL string (or null)
+    const prod = await productService.create({ name, image, description, product_link: finalLink }, req.user.id)
     logger.info('Product created: %s by user %s', prod.id, req.user?.id)
     res.status(201).json({ success: true, data: prod, message: 'Product created successfully' })
   } catch (err) {
@@ -47,15 +43,11 @@ async function list(req, res, next) {
 
 async function update(req, res, next) {
   try {
-    const { name, link_oferta } = req.body
-    logger.debug('UPDATE body: %o', { name, link_oferta })
-    
-    const updates = { name, link_oferta }
-    if (req.file) {
-      const base = config.baseUrl || `${req.protocol}://${req.get('host')}`;
-      updates.image = `${base}/uploads/${encodeURIComponent(req.file.filename)}`
-      logger.debug('UPDATE image: %s', updates.image)
-    }
+    const { name, image, description, product_link, link_oferta } = req.body
+    const finalLink = product_link || link_oferta || null
+    logger.debug('UPDATE body: %o', { name, image, description, product_link: finalLink })
+
+    const updates = { name, image, description, product_link: finalLink }
     
     // service now returns { old, updated }
     const { old, updated } = await productService.update(req.params.id, req.user.id, updates)
@@ -66,12 +58,7 @@ async function update(req, res, next) {
       return next(err)
     }
 
-    // cleanup previous image if it was replaced
-    if (old && old.image && updates.image && old.image !== updates.image) {
-      const { removeUpload } = require('../utils/fileUtils')
-      // fire and forget, don't block the response
-      removeUpload(old.image).catch(e => logger.warn('Failed to remove old image: %o', e))
-    }
+    // no local file cleanup required (images are external URLs)
 
     logger.info('Product updated: %s', updated.id)
     res.json({ success: true, data: updated, message: 'Product updated successfully' })
@@ -92,11 +79,7 @@ async function remove(req, res, next) {
       return next(err)
     }
 
-    // remove associated image file if present
-    if (old && old.image) {
-      const { removeUpload } = require('../utils/fileUtils')
-      removeUpload(old.image).catch(e => logger.warn('Failed to remove image: %o', e))
-    }
+    // no local file cleanup required (images are external URLs)
 
     logger.info('Product %s deleted', req.params.id)
     res.json({ success: true, data: null, message: 'Product deleted successfully' })
