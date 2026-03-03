@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react"
 import api from "../services/api"
+import { markAuthenticated } from '@/utils/auth'
 
 export const AuthContext = createContext()
 
@@ -18,8 +19,10 @@ export function AuthProvider({ children }) {
         const user = response?.data?.data
         if (user && typeof user === 'object') {
           setCurrentUser(user)
+          markAuthenticated(true)
         } else {
           setCurrentUser(null)
+          markAuthenticated(false)
         }
       } catch (err) {
         // 401 or other error = not authenticated (silent)
@@ -42,9 +45,11 @@ export function AuthProvider({ children }) {
       const user = response?.data?.data
       if (user && typeof user === 'object') {
         setCurrentUser(user)
+        markAuthenticated(true)
         return true
       }
       setCurrentUser(null)
+      markAuthenticated(false)
       return false
     } catch (err) {
       setCurrentUser(null)
@@ -65,6 +70,7 @@ export function AuthProvider({ children }) {
       await api.post('/auth/logout')
     } finally {
       setCurrentUser(null)
+      markAuthenticated(false)
     }
   }
 

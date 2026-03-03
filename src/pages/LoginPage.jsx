@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -12,13 +12,20 @@ import { Lock } from 'lucide-react';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, loading: authLoading } = useAuth();
+  const { login, loading: authLoading, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [errors, setErrors] = useState({});
+
+  // if already logged in, redirect to dashboard
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [authLoading, isAuthenticated, navigate]);
 
   const validate = () => {
     const newErrors = {};

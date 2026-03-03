@@ -31,6 +31,8 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          {/* catch-all fallback for SPA reloads */}
+          <Route path="*" element={<HomePage />} />
         </Routes>
         <Toaster />
       </Router>
