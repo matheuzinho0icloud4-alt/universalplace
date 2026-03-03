@@ -28,16 +28,28 @@ async function updateConfig(req, res, next) {
     // Build input object from allowed fields only
     const body = req.body || {}
 
+    // Extract socialMedia object from body (frontend sends it as an object)
+    // Fallback: if socialMedia is nested differently, extract individually
+    let socialMedia = body.socialMedia || {}
+    if (typeof socialMedia !== 'object') {
+      socialMedia = {}
+    }
+    
+    // Ensure each social field is a string (not null)
+    socialMedia = {
+      instagram: socialMedia.instagram || '',
+      facebook: socialMedia.facebook || '',
+      whatsapp: socialMedia.whatsapp || ''
+    }
+
     const input = {
       name: body.name || undefined,
       logo_url: body.logo_url || body.logo || undefined,
       banner_url: body.banner_url || body.banner || undefined,
-      socialMedia: {
-        instagram: body.instagram || undefined,
-        facebook: body.facebook || undefined,
-        whatsapp: body.whatsapp || undefined,
-      }
+      socialMedia: socialMedia
     }
+
+    logger.info('📝 [CTRL] Received update with socialMedia: %o', input.socialMedia)
 
     // Validate with Zod to prevent unexpected fields
     const parsed = StoreConfigSchema.safeParse(input)
@@ -53,6 +65,7 @@ async function updateConfig(req, res, next) {
 
     // no local file cleanup required (images are external URLs)
 
+    logger.info('✅ [CTRL] Store config updated successfully with socialMedia: %o', config.socialMedia)
     return res.json({ success: true, data: config, message: 'Store config updated successfully' })
   } catch (err) {
     return next(err)
