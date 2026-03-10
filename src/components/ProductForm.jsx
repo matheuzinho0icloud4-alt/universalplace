@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 
 import { useToast } from '@/hooks/use-toast';
+import { fetchCategories } from '@/services/categories';
 
 const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
   const { toast } = useToast();
@@ -14,10 +16,14 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
     image: '',
     name: '',
     product_link: '',
-    description: ''
+    description: '',
+    category_id: '',
+    is_featured: false
   });
   
   const [errors, setErrors] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -25,13 +31,32 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
         image: product.image ? product.image : '',
         name: product.name || '',
         product_link: product.product_link || product.link_oferta || '',
-        description: product.description || ''
+        description: product.description || '',
+        category_id: product.category_id || '',
+        is_featured: product.is_featured || false
       });
     } else {
-      setFormData({ image: '', name: '', product_link: '', description: '' });
+      setFormData({ image: '', name: '', product_link: '', description: '', category_id: '', is_featured: false });
     }
     setErrors({});
   }, [product, isOpen]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      setLoadingCategories(true);
+      try {
+        const cats = await fetchCategories();
+        setCategories(cats);
+      } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+    if (isOpen) {
+      loadCategories();
+    }
+  }, [isOpen]);
 
   const handleImageUrlChange = (e) => {
     setFormData(prev => ({ ...prev, image: e.target.value }));
@@ -73,7 +98,9 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
         name: formData.name,
         image: formData.image,
         description: formData.description,
-        product_link: formData.product_link
+        product_link: formData.product_link,
+        category_id: formData.category_id ? parseInt(formData.category_id) : null,
+        is_featured: formData.is_featured
       };
       onSubmit(payload);
       toast({
@@ -150,6 +177,31 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
               placeholder="Descrição do produto"
               className="mt-1 text-gray-900"
             />
+          </div>
+
+          <div>
+            <Label htmlFor="category">Categoria</Label>
+            <select
+              id="category"
+              value={formData.category_id}
+              onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+              disabled={loadingCategories}
+            >
+              <option value="">Selecionar categoria</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="is_featured"
+              checked={formData.is_featured}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_featured: checked }))}
+            />
+            <Label htmlFor="is_featured">Produto em destaque</Label>
           </div>
 
           <DialogFooter>

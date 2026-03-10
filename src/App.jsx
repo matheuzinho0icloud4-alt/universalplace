@@ -8,6 +8,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
 import AdminDashboard from '@/pages/AdminDashboard';
+import AdminCategoriesPage from '@/pages/AdminCategoriesPage';
 import QuemSomos from '@/pages/QuemSomos';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import TermsOfUse from '@/pages/TermsOfUse';
@@ -30,6 +31,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/categories" 
+            element={
+              <ProtectedRoute>
+                <AdminCategoriesPage />
               </ProtectedRoute>
             } 
           />

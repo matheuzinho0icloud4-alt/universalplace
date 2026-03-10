@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getStoreConfig } from '@/utils/config';
 import { fetchProducts, createProduct, updateProductApi, deleteProductApi } from '@/services/products';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, Edit, Trash2, Package, Settings } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Package, Settings, Tags } from 'lucide-react';
 import ProductForm from '@/components/ProductForm';
 import StoreSettingsForm from '@/components/StoreSettingsForm';
 
@@ -176,10 +176,14 @@ const AdminDashboard = () => {
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8">
           <Tabs defaultValue="products" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsList className="grid w-full max-w-md grid-cols-3">
               <TabsTrigger value="products">
                 <Package className="w-4 h-4 mr-2" />
                 Products
+              </TabsTrigger>
+              <TabsTrigger value="categories">
+                <Tags className="w-4 h-4 mr-2" />
+                Categories
               </TabsTrigger>
               <TabsTrigger value="settings">
                 <Settings className="w-4 h-4 mr-2" />
@@ -258,6 +262,24 @@ const AdminDashboard = () => {
                       </TableBody>
                     </Table>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Categories Tab */}
+            <TabsContent value="categories">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>Category Management</CardTitle>
+                  <Button onClick={() => navigate('/admin/categories')}>
+                    <Tags className="w-4 h-4 mr-2" />
+                    Manage Categories
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">
+                    Click the button above to access the full category management interface.
+                  </p>
                 </CardContent>
               </Card>
             </TabsContent>
