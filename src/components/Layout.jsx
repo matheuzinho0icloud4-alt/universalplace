@@ -65,7 +65,7 @@ function Layout({ children }) {
 
               <div className="flex items-center gap-2 md:gap-4 w-full sm:w-auto">
                 {/* Social Media Links */}
-                <div className="hidden md:flex items-center space-x-3">
+                <div className="flex items-center gap-2 md:gap-3">
                   {storeConfig.socialMedia.instagram && (
                     <a 
                       href={storeConfig.socialMedia.instagram} 
@@ -74,7 +74,7 @@ function Layout({ children }) {
                       className="text-pink-600 hover:text-pink-700 transition-colors"
                       title="Instagram"
                     >
-                      <Instagram className="w-5 md:w-6 h-5 md:h-6" />
+                      <Instagram className="w-4 h-4 md:w-5 md:h-5" />
                     </a>
                   )}
                   {storeConfig.socialMedia.facebook && (
@@ -84,7 +84,7 @@ function Layout({ children }) {
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-700 transition-colors"
                     >
-                      <Facebook className="w-6 h-6" />
+                      <Facebook className="w-4 h-4 md:w-5 md:h-5" />
                     </a>
                   )}
                   {storeConfig.socialMedia.whatsapp && (
@@ -94,7 +94,7 @@ function Layout({ children }) {
                       rel="noopener noreferrer"
                       className="text-green-600 hover:text-green-700 transition-colors"
                     >
-                      <MessageCircle className="w-6 h-6" />
+                      <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
                     </a>
                   )}
                 </div>
