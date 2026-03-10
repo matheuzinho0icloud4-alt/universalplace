@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
@@ -62,6 +62,11 @@ const CategoryPage = () => {
       <Layout>
         <div className="container mx-auto px-4 py-8">
           <div className="mb-6">
+            <Button variant="outline" asChild className="mb-4">
+              <Link to="/">
+                Voltar à página principal
+              </Link>
+            </Button>
             <h1 className="text-3xl font-bold mb-2">{categoryName}</h1>
             <p className="text-muted-foreground">
               {total} produto{total !== 1 ? 's' : ''} encontrado{total !== 1 ? 's' : ''}

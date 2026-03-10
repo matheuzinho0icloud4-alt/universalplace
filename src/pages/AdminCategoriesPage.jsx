@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { fetchCategories, createCategory, updateCategory, deleteCategory } from '@/services/categories';
 
 const AdminCategoriesPage = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -174,6 +176,11 @@ const AdminCategoriesPage = () => {
 
   return (
     <div className="p-6">
+      <div className="mb-4">
+        <Button variant="outline" onClick={() => navigate('/admin/dashboard')}>
+          ← Voltar ao Dashboard
+        </Button>
+      </div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Gerenciar Categorias</h1>
         <Button onClick={() => handleOpenForm()}>
