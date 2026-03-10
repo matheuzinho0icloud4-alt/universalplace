@@ -10,16 +10,6 @@ export async function fetchCategoriesForHome() {
   }
 }
 
-export async function fetchCategoriesForHome() {
-  try {
-    const response = await api.get('/categories/home');
-    const categories = response?.data?.data || [];
-    return Array.isArray(categories) ? categories : [];
-  } catch (err) {
-    return [];
-  }
-}
-
 export async function createCategory({ name, slug, show_home, home_order }) {
   const payload = { name, slug, show_home, home_order };
   const response = await api.post('/categories', payload, {
