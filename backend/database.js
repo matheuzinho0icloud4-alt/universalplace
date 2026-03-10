@@ -122,7 +122,7 @@ async function initializeDatabase() {
         name: 'Ofertas Universal Place',
         logo: '',
         banner: 'https://images.unsplash.com/photo-1674027392842-29f8354e236c',
-        socialMedia: { instagram: '', facebook: '', whatsapp: '' }
+        socialMedia: { instagram: '', facebook: '', youtube: '' }
       }
       await pool.query('INSERT INTO store_config (id, config) VALUES (1, $1)', [defaultConfig])
       logger.info('✅ [DB] Inserted default store_config (id=1)')

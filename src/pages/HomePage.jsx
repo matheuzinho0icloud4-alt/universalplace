@@ -28,7 +28,7 @@ const HomePage = () => {
         name: cfg?.name || 'Ofertas Universal Place',
         logo: cfg?.logo_url || cfg?.logo || '',
         banner: cfg?.banner_url || cfg?.banner || '',
-        socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
+        socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', youtube: '' }
       };
       setStoreConfig(fullCfg);
 

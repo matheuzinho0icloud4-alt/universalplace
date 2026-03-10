@@ -15,7 +15,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
     socialMedia: {
       instagram: '',
       facebook: '',
-      whatsapp: ''
+      youtube: ''
     }
   });
   const [loading, setLoading] = useState(false);
@@ -260,13 +260,13 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
             </div>
 
             <div>
-              <Label htmlFor="whatsapp">WhatsApp URL</Label>
+              <Label htmlFor="youtube">YouTube URL</Label>
               <Input
-                id="whatsapp"
+                id="youtube"
                 type="url"
-                value={formData.socialMedia.whatsapp}
-                onChange={(e) => handleSocialMediaChange('whatsapp', e.target.value)}
-                placeholder="https://wa.me/1234567890"
+                value={formData.socialMedia.youtube}
+                onChange={(e) => handleSocialMediaChange('youtube', e.target.value)}
+                placeholder="https://youtube.com/@yourchannel"
                 className="mt-1 text-gray-900"
                 disabled={loading}
               />

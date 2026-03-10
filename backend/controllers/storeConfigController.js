@@ -10,7 +10,7 @@ const StoreConfigSchema = z.object({
   socialMedia: z.object({
     instagram: z.string().optional(),
     facebook: z.string().optional(),
-    whatsapp: z.string().optional(),
+    youtube: z.string().optional(),
   }).optional(),
 })
 
@@ -39,7 +39,7 @@ async function updateConfig(req, res, next) {
     socialMedia = {
       instagram: socialMedia.instagram || '',
       facebook: socialMedia.facebook || '',
-      whatsapp: socialMedia.whatsapp || ''
+      youtube: socialMedia.youtube || ''
     }
 
     const input = {

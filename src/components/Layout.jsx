@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, MessageCircle } from 'lucide-react';
+import { Instagram, Facebook, Play } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { fetchStoreConfig } from '@/services/storeConfig';
 
@@ -19,7 +19,7 @@ function Layout({ children }) {
           name: cfg?.name || 'Ofertas Universal Place',
           logo: cfg?.logo_url || cfg?.logo || '',
           banner: cfg?.banner_url || cfg?.banner || '',
-          socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
+          socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', youtube: '' }
         };
         if (mounted) setStoreConfig(fullCfg);
       } catch {
@@ -29,7 +29,7 @@ function Layout({ children }) {
             name: 'Ofertas Universal Place', 
             logo: '', 
             banner: '', 
-            socialMedia: { instagram: '', facebook: '', whatsapp: '' } 
+            socialMedia: { instagram: '', facebook: '', youtube: '' } 
           });
         }
       }
@@ -87,14 +87,15 @@ function Layout({ children }) {
                       <Facebook className="w-4 h-4 md:w-5 md:h-5" />
                     </a>
                   )}
-                  {storeConfig.socialMedia.whatsapp && (
+                  {storeConfig.socialMedia.youtube && (
                     <a 
-                      href={storeConfig.socialMedia.whatsapp} 
+                      href={storeConfig.socialMedia.youtube} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-green-600 hover:text-green-700 transition-colors"
+                      className="text-red-600 hover:text-red-700 transition-colors"
+                      title="YouTube"
                     >
-                      <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
+                      <Play className="w-4 h-4 md:w-5 md:h-5" />
                     </a>
                   )}
                 </div>
@@ -168,14 +169,15 @@ function Layout({ children }) {
                       <Facebook className="w-5 h-5" />
                     </a>
                   )}
-                  {storeConfig.socialMedia.whatsapp && (
+                  {storeConfig.socialMedia.youtube && (
                     <a 
-                      href={storeConfig.socialMedia.whatsapp} 
+                      href={storeConfig.socialMedia.youtube} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:text-green-400 transition-colors"
+                      className="hover:text-red-400 transition-colors"
+                      title="YouTube"
                     >
-                      <MessageCircle className="w-5 h-5" />
+                      <Play className="w-5 h-5" />
                     </a>
                   )}
                 </div>

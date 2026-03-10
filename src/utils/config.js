@@ -7,7 +7,7 @@ const DEFAULT_CONFIG = {
   socialMedia: {
     instagram: '',
     facebook: '',
-    whatsapp: ''
+    youtube: ''
   }
 };
 
