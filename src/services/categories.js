@@ -1,5 +1,15 @@
 import api from './api';
 
+export async function fetchCategories() {
+  try {
+    const response = await api.get('/categories');
+    const categories = response?.data?.data || [];
+    return Array.isArray(categories) ? categories : [];
+  } catch (err) {
+    return [];
+  }
+}
+
 export async function fetchCategoriesForHome() {
   try {
     const response = await api.get('/categories/home');
