@@ -100,8 +100,8 @@ function Layout({ children }) {
                 </div>
 
                 {/* Admin Button */}
-                <Link to="/admin/login" className="w-full sm:w-auto">
-                  <button className="border border-gray-900 text-gray-900 rounded px-3 py-1 text-xs md:text-sm hover:bg-gray-100 transition w-full md:w-auto">Admin</button>
+                <Link to="/admin/login" className="sm:w-auto">
+                  <button className="border border-gray-900 text-gray-900 rounded px-3 py-1 text-xs md:text-sm hover:bg-gray-100 transition w-auto">Admin</button>
                 </Link>
               </div>
             </div>
