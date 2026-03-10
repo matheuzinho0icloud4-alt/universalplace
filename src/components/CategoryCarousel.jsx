@@ -19,30 +19,30 @@ const CategoryCarousel = ({ category }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">{category.name}</h2>
-        <Button asChild variant="outline" size="sm">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h2 className="text-xl md:text-2xl font-bold">{category.name}</h2>
+        <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
           <Link to={`/categoria/${category.slug}`}>Ver mais</Link>
         </Button>
       </div>
-      <div className="relative">
+      <div className="relative w-full">
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto pb-4 px-1 md:px-0 scroll-smooth snap-x snap-mandatory scrollbar-hide"
+          className="flex gap-3 md:gap-4 overflow-x-auto pb-4 px-2 md:px-0 scroll-smooth snap-x snap-mandatory scrollbar-hide"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {(category.products || []).slice(0, 6).map((product) => (
-            <Card key={product.id} className="min-w-[160px] max-w-[200px] sm:min-w-[180px] md:min-w-[200px] overflow-hidden flex-shrink-0 snap-start transition hover:scale-[1.03] hover:shadow-lg">
+            <Card key={product.id} className="min-w-[calc(50vw-20px)] sm:min-w-[calc(33.333%-10px)] md:min-w-[180px] lg:min-w-[200px] max-w-[200px] overflow-hidden flex-shrink-0 snap-start transition hover:scale-[1.03] hover:shadow-lg">
               <img
                 loading="lazy"
                 decoding="async"
                 src={product.image || '/placeholder-product.jpg'}
                 alt={product.name}
-                className="w-full h-40 object-cover"
+                className="w-full aspect-square object-cover"
               />
-              <CardContent className="p-4">
-                <h3 className="font-semibold text-sm line-clamp-2 mb-2">{product.name}</h3>
-                <p className="text-xs text-gray-500 line-clamp-2 mb-3">{product.description}</p>
+              <CardContent className="p-3 md:p-4 flex flex-col">
+                <h3 className="font-semibold text-xs md:text-sm line-clamp-2 mb-2">{product.name}</h3>
+                <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-grow">{product.description}</p>
                 <Button asChild size="sm" className="w-full">
                   <a href={product.product_link} target="_blank" rel="noopener noreferrer">
                     Ver Oferta

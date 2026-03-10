@@ -150,21 +150,21 @@ const AdminDashboard = () => {
 
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b">
-          <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <Button variant="outline" onClick={() => navigate('/') }>
+        <header className="bg-white shadow-sm border-b sticky top-0 z-40">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1">
+                <Button variant="outline" onClick={() => navigate('/') } className="w-full sm:w-auto text-xs sm:text-sm">
                   Voltar para Página Principal
                 </Button>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">{storeConfig.name}</h1>
-                  <p className="text-sm text-gray-600">Admin Dashboard</p>
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{storeConfig.name}</h1>
+                  <p className="text-xs sm:text-sm text-gray-600">Admin Dashboard</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">Welcome, {currentUser?.email || currentUser?.id}</span>
-                <Button variant="outline" onClick={handleLogout}>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                <span className="text-xs sm:text-sm text-gray-600 order-2 sm:order-1">Welcome, {currentUser?.email ? currentUser.email.split('@')[0] : currentUser?.id}</span>
+                <Button variant="outline" onClick={handleLogout} className="w-full sm:w-auto order-1 sm:order-2" size="sm">
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </Button>
@@ -174,9 +174,9 @@ const AdminDashboard = () => {
         </header>
 
         {/* Main Content */}
-        <main className="container mx-auto px-4 py-8">
+        <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
           <Tabs defaultValue="products" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsList className="grid w-full grid-cols-3 max-w-full")
               <TabsTrigger value="products">
                 <Package className="w-4 h-4 mr-2" />
                 Products

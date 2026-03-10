@@ -54,16 +54,16 @@ function Layout({ children }) {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Header */}
         <header className="bg-white shadow-md sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-4 flex-1">
                 {storeConfig.logo && (
-                  <img src={storeConfig.logo} alt={`${storeConfig.name} logo`} className="h-12 object-contain" />
+                  <img src={storeConfig.logo} alt={`${storeConfig.name} logo`} className="h-10 md:h-12 object-contain flex-shrink-0" />
                 )}
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{storeConfig.name}</h1>
+                <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900 truncate">{storeConfig.name}</h1>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-2 md:gap-4 w-full sm:w-auto">
                 {/* Social Media Links */}
                 <div className="hidden md:flex items-center space-x-3">
                   {storeConfig.socialMedia.instagram && (
@@ -72,8 +72,9 @@ function Layout({ children }) {
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-pink-600 hover:text-pink-700 transition-colors"
+                      title="Instagram"
                     >
-                      <Instagram className="w-6 h-6" />
+                      <Instagram className="w-5 md:w-6 h-5 md:h-6" />
                     </a>
                   )}
                   {storeConfig.socialMedia.facebook && (
@@ -99,8 +100,8 @@ function Layout({ children }) {
                 </div>
 
                 {/* Admin Button */}
-                <Link to="/admin/login">
-                  <button className="border border-gray-900 text-gray-900 rounded px-3 py-1 text-sm hover:bg-gray-100 transition">Admin</button>
+                <Link to="/admin/login" className="w-full sm:w-auto">
+                  <button className="border border-gray-900 text-gray-900 rounded px-3 py-1 text-xs md:text-sm hover:bg-gray-100 transition w-full md:w-auto">Admin</button>
                 </Link>
               </div>
             </div>
@@ -111,10 +112,10 @@ function Layout({ children }) {
         {children}
 
         {/* Footer */}
-        <footer className="bg-gray-900 text-white py-12">
-          <div className="container mx-auto px-4">
+        <footer className="bg-gray-900 text-white py-8 md:py-12">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Top Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 mb-8">
               {/* Brand Section */}
               <div>
                 <p className="text-lg font-semibold">{storeConfig.name}</p>

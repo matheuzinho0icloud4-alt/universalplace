@@ -80,38 +80,38 @@ const LoginPage = () => {
                 <Lock className="w-8 h-8 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-            <p className="text-sm text-gray-600">Enter your credentials to access the dashboard</p>
+            <CardTitle className="text-xl md:text-2xl font-bold">Admin Login</CardTitle>
+            <p className="text-xs md:text-sm text-gray-600">Enter your credentials to access the dashboard</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Enter your email"
-                  className="mt-1 text-gray-900"
+                  className="mt-1 text-gray-900 text-sm"
                 />
-                {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
               </div>
 
               <div>
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-sm">Password</Label>
                 <Input
                   id="password"
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   placeholder="Enter your password"
-                  className="mt-1 text-gray-900"
+                  className="mt-1 text-gray-900 text-sm"
                 />
-                {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+                {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
               </div>
 
-              <Button type="submit" className="w-full" disabled={authLoading}>
+              <Button type="submit" className="w-full text-sm" disabled={authLoading}>
                 {authLoading ? 'Signing in...' : 'Login'}
               </Button>
             </form>

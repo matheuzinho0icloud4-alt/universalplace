@@ -105,7 +105,7 @@ const HomePage = () => {
           </div>
         </section>
 
-        <div className="container mx-auto px-4 py-12">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
           {loading ? (
             <div className="flex justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -114,14 +114,14 @@ const HomePage = () => {
             <>
               {/* Seção 0: Menu de Categorias */}
               {allCategories.length > 0 && (
-                <section className="mb-12">
-                  <h2 className="text-3xl font-bold mb-8 text-center">Categorias</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                <section className="mb-8 md:mb-12">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Categorias</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
                     {allCategories.map((category) => (
                       <Link key={category.id} to={`/categoria/${category.slug}`}>
-                        <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200 text-center">
-                          <h3 className="font-semibold text-lg mb-2">{category.name}</h3>
-                          <p className="text-sm text-gray-600">Ver produtos</p>
+                        <div className="bg-white border border-gray-200 rounded-lg p-3 md:p-4 hover:shadow-lg transition-shadow duration-200 text-center">
+                          <h3 className="font-semibold text-sm md:text-base lg:text-lg mb-2 line-clamp-2">{category.name}</h3>
+                          <p className="text-xs md:text-sm text-gray-600">Ver produtos</p>
                         </div>
                       </Link>
                     ))}
@@ -131,16 +131,16 @@ const HomePage = () => {
 
               {/* Seção 1: Produtos em Destaque */}
               {featuredProducts.length > 0 && (
-                <section className="mb-12">
-                  <h2 className="text-3xl font-bold mb-8 text-center">Produtos em Destaque</h2>
+                <section className="mb-8 md:mb-12">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Produtos em Destaque</h2>
                   <FeaturedCarousel products={featuredProducts} />
                 </section>
               )}
 
               {/* Seção 2: Produtos Recém Adicionados */}
               {recentProducts.length > 0 && (
-                <section className="mb-12">
-                  <h2 className="text-3xl font-bold mb-8 text-center">Produtos Recém Adicionados</h2>
+                <section className="mb-8 md:mb-12">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Produtos Recém Adicionados</h2>
                   <RecentCarousel products={recentProducts} />
                 </section>
               )}

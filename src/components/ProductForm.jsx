@@ -113,25 +113,25 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{product ? 'Edit Product' : 'Add New Product'}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg md:text-2xl">{product ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+          <DialogDescription className="text-xs md:text-sm">
             {product ? 'Update the product information below.' : 'Fill in the details below to add a new product to your store.'}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="image">Product Image URL</Label>
+            <Label htmlFor="image" className="text-sm">Product Image URL</Label>
             <Input
               id="image"
               type="text"
               placeholder="Cole a URL da imagem"
               value={formData.image}
               onChange={handleImageUrlChange}
-              className="mt-1 text-gray-900"
+              className="mt-1 text-gray-900 text-sm"
             />
-            {errors.image && <p className="text-sm text-red-500 mt-1">{errors.image}</p>}
+            {errors.image && <p className="text-xs text-red-500 mt-1">{errors.image}</p>}
             {formData.image && (
               <img
                 src={formData.image}
@@ -143,7 +143,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
           </div>
 
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" className="text-sm">Name</Label>
             <Input
               id="name"
               type="text"
@@ -204,11 +204,11 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
             <Label htmlFor="is_featured">Produto em destaque</Label>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+          <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2">
+            <Button type="button" variant="outline" onClick={onClose} className="w-full sm:w-auto">
               Cancel
             </Button>
-            <Button type="submit">
+            <Button type="submit" className="w-full sm:w-auto">
               {product ? 'Update Product' : 'Add Product'}
             </Button>
           </DialogFooter>

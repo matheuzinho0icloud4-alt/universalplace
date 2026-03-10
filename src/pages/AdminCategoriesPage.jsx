@@ -175,15 +175,15 @@ const AdminCategoriesPage = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
       <div className="mb-4">
-        <Button variant="outline" onClick={() => navigate('/admin/dashboard')}>
+        <Button variant="outline" onClick={() => navigate('/admin/dashboard')} size="sm">
           ← Voltar ao Dashboard
         </Button>
       </div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gerenciar Categorias</h1>
-        <Button onClick={() => handleOpenForm()}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold">Gerenciar Categorias</h1>
+        <Button onClick={() => handleOpenForm()} className="w-full sm:w-auto">
           + Nova Categoria
         </Button>
       </div>
@@ -250,38 +250,38 @@ const AdminCategoriesPage = () => {
       </Card>
 
       <Dialog open={isFormOpen} onOpenChange={handleCloseForm}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingCategory ? 'Editar Categoria' : 'Nova Categoria'}</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg md:text-2xl">{editingCategory ? 'Editar Categoria' : 'Nova Categoria'}</DialogTitle>
+            <DialogDescription className="text-xs md:text-sm">
               {editingCategory ? 'Atualize as informações da categoria.' : 'Preencha os detalhes da nova categoria.'}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="name">Nome</Label>
+              <Label htmlFor="name" className="text-sm">Nome</Label>
               <Input
                 id="name"
                 type="text"
                 value={formData.name}
                 onChange={handleNameChange}
                 placeholder="Nome da categoria"
-                className="mt-1 text-gray-900"
+                className="mt-1 text-gray-900 text-sm"
               />
-              {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+              {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
             </div>
 
             <div>
-              <Label htmlFor="slug">Slug</Label>
+              <Label htmlFor="slug" className="text-sm">Slug</Label>
               <Input
                 id="slug"
                 type="text"
                 value={formData.slug}
                 onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
                 placeholder="slug-da-categoria"
-                className="mt-1 text-gray-900"
+                className="mt-1 text-gray-900 text-sm"
               />
-              {errors.slug && <p className="text-sm text-red-500 mt-1">{errors.slug}</p>}
+              {errors.slug && <p className="text-xs text-red-500 mt-1">{errors.slug}</p>}
             </div>
 
             <div className="flex items-center space-x-2">
@@ -290,27 +290,27 @@ const AdminCategoriesPage = () => {
                 checked={formData.show_home}
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, show_home: checked }))}
               />
-              <Label htmlFor="show_home">Mostrar na página inicial</Label>
+              <Label htmlFor="show_home" className="text-sm">Mostrar na página inicial</Label>
             </div>
 
             <div>
-              <Label htmlFor="home_order">Ordem na Home</Label>
+              <Label htmlFor="home_order" className="text-sm">Ordem na Home</Label>
               <Input
                 id="home_order"
                 type="number"
                 value={formData.home_order}
                 onChange={(e) => setFormData(prev => ({ ...prev, home_order: parseInt(e.target.value) || 0 }))}
                 placeholder="0"
-                className="mt-1 text-gray-900"
+                className="mt-1 text-gray-900 text-sm"
                 min="0"
               />
             </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleCloseForm}>
+            <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2">
+              <Button type="button" variant="outline" onClick={handleCloseForm} className="w-full sm:w-auto">
                 Cancelar
               </Button>
-              <Button type="submit">
+              <Button type="submit" className="w-full sm:w-auto">
                 {editingCategory ? 'Atualizar' : 'Criar'}
               </Button>
             </DialogFooter>
