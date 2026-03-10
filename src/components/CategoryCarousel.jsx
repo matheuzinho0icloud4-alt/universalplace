@@ -20,7 +20,7 @@ const CategoryCarousel = ({ category }) => {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-        <h2 className="text-xl md:text-2xl font-bold">{category.name}</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">{category.name}</h2>
         <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
           <Link to={`/categoria/${category.slug}`}>Ver mais</Link>
         </Button>
@@ -32,7 +32,7 @@ const CategoryCarousel = ({ category }) => {
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {(category.products || []).slice(0, 6).map((product) => (
-            <Card key={product.id} className="min-w-[calc(50vw-20px)] sm:min-w-[calc(33.333%-10px)] md:min-w-[180px] lg:min-w-[200px] max-w-[200px] overflow-hidden flex-shrink-0 snap-start transition hover:scale-[1.03] hover:shadow-lg">
+            <Card key={product.id} className="min-w-[160px] max-w-[200px] overflow-hidden flex-shrink-0 snap-start transition hover:scale-[1.03] hover:shadow-lg">
               <img
                 loading="lazy"
                 decoding="async"

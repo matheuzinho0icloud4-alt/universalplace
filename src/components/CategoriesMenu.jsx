@@ -48,7 +48,7 @@ const CategoriesMenu = () => {
       <Button
         variant="outline"
         onClick={() => setIsOpen(true)}
-        className="gap-2"
+        className="gap-2 text-sm md:text-base"
       >
         <Menu className="w-4 h-4" />
         Categorias
@@ -57,7 +57,7 @@ const CategoriesMenu = () => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Categorias</DialogTitle>
+            <DialogTitle className="text-lg md:text-xl">Categorias</DialogTitle>
           </DialogHeader>
 
           {loading ? (

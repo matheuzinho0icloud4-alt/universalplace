@@ -5,8 +5,8 @@ import Layout from '@/components/Layout';
 const PrivacyPolicy = () => {
   return (
     <Layout>
-      <section className="container mx-auto px-4 py-12 text-gray-900">
-        <h2 className="text-3xl font-bold mb-6">Política de Privacidade</h2>
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-900">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6">Política de Privacidade</h2>
         
         <p className="mb-4">
           A sua privacidade é importante para nós. Esta Política de Privacidade descreve como o Ofertas Universal Place funciona em relação às informações dos usuários.

@@ -22,7 +22,7 @@ const RecentCarousel = ({ products }) => {
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         {(products || []).slice(0, 8).map((product) => (
-          <Card key={product.id} className="min-w-[calc(50vw-20px)] sm:min-w-[calc(33.333%-10px)] md:min-w-[180px] lg:min-w-[200px] max-w-[200px] overflow-hidden flex-shrink-0 snap-start transition hover:scale-[1.03] hover:shadow-lg">
+          <Card key={product.id} className="min-w-[160px] max-w-[200px] overflow-hidden flex-shrink-0 snap-start transition hover:scale-[1.03] hover:shadow-lg">
             <img
               loading="lazy"
               decoding="async"

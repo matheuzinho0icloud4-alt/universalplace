@@ -67,7 +67,7 @@ const CategoryPage = () => {
                 Voltar à página principal
               </Link>
             </Button>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{categoryName}</h1>
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2">{categoryName}</h1>
             <p className="text-sm md:text-base text-muted-foreground">
               {total} produto{total !== 1 ? 's' : ''} encontrado{total !== 1 ? 's' : ''}
             </p>
@@ -79,7 +79,7 @@ const CategoryPage = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 lg:gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 mb-8">
                 {products.map((product) => (
                   <Card key={product.id} className="h-full flex flex-col">
                     <CardContent className="p-3 md:p-4 flex flex-col h-full">

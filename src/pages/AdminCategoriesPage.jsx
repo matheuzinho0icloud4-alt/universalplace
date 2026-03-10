@@ -182,7 +182,7 @@ const AdminCategoriesPage = () => {
         </Button>
       </div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Gerenciar Categorias</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">Gerenciar Categorias</h1>
         <Button onClick={() => handleOpenForm()} className="w-full sm:w-auto">
           + Nova Categoria
         </Button>

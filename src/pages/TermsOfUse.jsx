@@ -5,14 +5,14 @@ import Layout from '@/components/Layout';
 const TermsOfUse = () => {
   return (
     <Layout>
-      <section className="container mx-auto px-4 py-12 text-gray-900">
-        <h2 className="text-3xl font-bold mb-6">Termos de Uso</h2>
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-900">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6">Termos de Uso</h2>
         
         <p className="mb-4">
           Ao acessar o site Ofertas Universal Place, o usuário concorda com os seguintes termos:
         </p>
         
-        <h3 className="text-2xl font-semibold mb-4 mt-8">1. Objetivo da Plataforma</h3>
+        <h3 className="text-lg md:text-xl font-semibold mb-4 mt-8">1. Objetivo da Plataforma</h3>
         <p className="mb-4">
           O Ofertas Universal Place é um agregador de ofertas, reunindo produtos e promoções de lojas parceiras.
         </p>
@@ -21,7 +21,7 @@ const TermsOfUse = () => {
           <li>As transações ocorrem exclusivamente no site da loja de destino.</li>
         </ul>
         
-        <h3 className="text-2xl font-semibold mb-4 mt-8">2. Responsabilidade sobre Ofertas</h3>
+        <h3 className="text-lg md:text-xl font-semibold mb-4 mt-8">2. Responsabilidade sobre Ofertas</h3>
         <p className="mb-4">
           Os preços, disponibilidade e condições dos produtos podem variar sem aviso prévio.
         </p>
@@ -33,7 +33,7 @@ const TermsOfUse = () => {
           <li>Questões relacionadas ao site parceiro</li>
         </ul>
         
-        <h3 className="text-2xl font-semibold mb-4 mt-8">3. Propriedade Intelectual</h3>
+        <h3 className="text-lg md:text-xl font-semibold mb-4 mt-8">3. Propriedade Intelectual</h3>
         <p className="mb-4">
           Todo o conteúdo do site, incluindo layout, textos e marca, é protegido por direitos autorais.
         </p>
@@ -41,7 +41,7 @@ const TermsOfUse = () => {
           É proibida a reprodução sem autorização.
         </p>
         
-        <h3 className="text-2xl font-semibold mb-4 mt-8">4. Modificações</h3>
+        <h3 className="text-lg md:text-xl font-semibold mb-4 mt-8">4. Modificações</h3>
         <p className="mb-8">
           Reservamo-nos o direito de modificar estes termos a qualquer momento.
         </p>

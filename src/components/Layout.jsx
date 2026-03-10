@@ -60,7 +60,7 @@ function Layout({ children }) {
                 {storeConfig.logo && (
                   <img src={storeConfig.logo} alt={`${storeConfig.name} logo`} className="h-10 md:h-12 object-contain flex-shrink-0" />
                 )}
-                <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900 truncate">{storeConfig.name}</h1>
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 truncate">{storeConfig.name}</h1>
               </div>
 
               <div className="flex items-center gap-2 md:gap-4 w-full sm:w-auto">

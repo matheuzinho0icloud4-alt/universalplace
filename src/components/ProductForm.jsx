@@ -156,7 +156,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
           </div>
 
           <div>
-            <Label htmlFor="product_link">Link do produto (opcional)</Label>
+            <Label htmlFor="product_link" className="text-sm">Link do produto (opcional)</Label>
             <Input
               id="product_link"
               type="url"
@@ -169,7 +169,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
           </div>
 
           <div>
-            <Label htmlFor="description">Descrição (opcional)</Label>
+            <Label htmlFor="description" className="text-sm">Descrição (opcional)</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -180,7 +180,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
           </div>
 
           <div>
-            <Label htmlFor="category">Categoria</Label>
+            <Label htmlFor="category" className="text-sm">Categoria</Label>
             <select
               id="category"
               value={formData.category_id}
@@ -201,7 +201,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
               checked={formData.is_featured}
               onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_featured: checked }))}
             />
-            <Label htmlFor="is_featured">Produto em destaque</Label>
+            <Label htmlFor="is_featured" className="text-sm">Produto em destaque</Label>
           </div>
 
           <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2">

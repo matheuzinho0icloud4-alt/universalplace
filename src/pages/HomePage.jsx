@@ -79,12 +79,12 @@ const HomePage = () => {
           style={{ backgroundImage: `url(${storeConfig.banner})` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-          <div className="relative container mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
+          <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-center text-center">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-6xl font-bold text-white mb-4"
+              className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-4"
             >
               Bem-vindo à Central de Ofertas
             </motion.h2>
@@ -92,7 +92,7 @@ const HomePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-white mb-8"
+              className="text-sm md:text-base lg:text-lg text-white mb-8"
             >
               Encontre as melhores promoções e ofertas exclusivas
             </motion.p>
@@ -114,7 +114,7 @@ const HomePage = () => {
               {/* Seção 1: Produtos em Destaque */}
               {featuredProducts.length > 0 && (
                 <section className="mb-8 md:mb-12">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Produtos em Destaque</h2>
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 md:mb-8 text-center">Produtos em Destaque</h2>
                   <FeaturedCarousel products={featuredProducts} />
                 </section>
               )}
@@ -122,7 +122,7 @@ const HomePage = () => {
               {/* Seção 2: Produtos Recém Adicionados */}
               {recentProducts.length > 0 && (
                 <section className="mb-8 md:mb-12">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Produtos Recém Adicionados</h2>
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 md:mb-8 text-center">Produtos Recém Adicionados</h2>
                   <RecentCarousel products={recentProducts} />
                 </section>
               )}
