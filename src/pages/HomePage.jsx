@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useToast } from '@/hooks/use-toast';
 import { fetchStoreConfig } from '@/services/storeConfig';
 import { fetchFeaturedProducts, fetchRecentProducts } from '@/services/products';
-import { fetchCategories, fetchCategoriesForHome } from '@/services/categories';
+import { fetchCategoriesForHome } from '@/services/categories';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 import RecentCarousel from '@/components/RecentCarousel';
 import CategoryCarousel from '@/components/CategoryCarousel';
+import CategoriesMenu from '@/components/CategoriesMenu';
 import { motion } from 'framer-motion';
 
 const HomePage = () => {
@@ -16,7 +16,6 @@ const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [recentProducts, setRecentProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [allCategories, setAllCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -44,11 +43,6 @@ const HomePage = () => {
       // Categorias com produtos (show_home=true, com produtos)
       const cats = await fetchCategoriesForHome();
       setCategories(Array.isArray(cats) ? cats : []);
-
-      // Todas as categorias para menu
-      const allCats = await fetchCategories();
-      const menuCats = allCats.filter(cat => cat.show_home).sort((a, b) => a.home_order - b.home_order);
-      setAllCategories(menuCats);
     } catch (err) {
       toast({ title: 'Erro', description: err?.message || 'Falha ao carregar dados', variant: 'destructive' });
       setFeaturedProducts([]);
@@ -112,22 +106,10 @@ const HomePage = () => {
             </div>
           ) : (
             <>
-              {/* Seção 0: Menu de Categorias */}
-              {allCategories.length > 0 && (
-                <section className="mb-8 md:mb-12">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Categorias</h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
-                    {allCategories.map((category) => (
-                      <Link key={category.id} to={`/categoria/${category.slug}`}>
-                        <div className="bg-white border border-gray-200 rounded-lg p-3 md:p-4 hover:shadow-lg transition-shadow duration-200 text-center">
-                          <h3 className="font-semibold text-sm md:text-base lg:text-lg mb-2 line-clamp-2">{category.name}</h3>
-                          <p className="text-xs md:text-sm text-gray-600">Ver produtos</p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              )}
+              {/* Seção 0: Botão de Categorias */}
+              <section className="mb-8 md:mb-12 flex justify-center">
+                <CategoriesMenu />
+              </section>
 
               {/* Seção 1: Produtos em Destaque */}
               {featuredProducts.length > 0 && (
