@@ -11,6 +11,7 @@ import AdminDashboard from '@/pages/AdminDashboard';
 import QuemSomos from '@/pages/QuemSomos';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import TermsOfUse from '@/pages/TermsOfUse';
+import CategoryPage from '@/pages/CategoryPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/categoria/:slug" element={<CategoryPage />} />
           <Route path="/quem-somos" element={<QuemSomos />} />
           <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
           <Route path="/termos-de-uso" element={<TermsOfUse />} />

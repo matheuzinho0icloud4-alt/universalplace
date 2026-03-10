@@ -12,6 +12,8 @@ const loginRules = [
 
 const productRules = [
   body('name').trim().notEmpty().withMessage('Name required'),
+  body('category_id').optional().isInt({ min: 1 }).withMessage('Valid category required'),
+  body('is_featured').optional().isBoolean().withMessage('is_featured must be boolean'),
 ]
 
 function checkErrors(req, res, next) {

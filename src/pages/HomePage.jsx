@@ -1,28 +1,28 @@
-
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { fetchStoreConfig } from '@/services/storeConfig';
-import { fetchProducts } from '@/services/products';
+import { fetchFeaturedProducts, fetchRecentProducts } from '@/services/products';
+import { fetchCategoriesForHome } from '@/services/categories';
+import FeaturedCarousel from '@/components/FeaturedCarousel';
+import RecentCarousel from '@/components/RecentCarousel';
+import CategoryCarousel from '@/components/CategoryCarousel';
 import { motion } from 'framer-motion';
 
 const HomePage = () => {
   const [storeConfig, setStoreConfig] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [recentProducts, setRecentProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const productsPerPage = 12;
 
   const fetchData = React.useCallback(async () => {
     setLoading(true);
     try {
+      // Configuração da loja
       const cfg = await fetchStoreConfig();
-      // Ensure cfg has all required properties with defaults
       const fullCfg = {
         name: cfg?.name || 'Ofertas Universal Place',
         logo: cfg?.logo_url || cfg?.logo || '',
@@ -30,21 +30,23 @@ const HomePage = () => {
         socialMedia: cfg?.socialMedia || { instagram: '', facebook: '', whatsapp: '' }
       };
       setStoreConfig(fullCfg);
-    } catch {
-      // fallback to default if API fails
-      setStoreConfig({ 
-        name: 'Ofertas Universal Place', 
-        logo: '', 
-        banner: '', 
-        socialMedia: { instagram: '', facebook: '', whatsapp: '' } 
-      });
-    }
-    try {
-      const prods = await fetchProducts();
-      setProducts(Array.isArray(prods) ? prods : []);
+
+      // Produtos em destaque (máx 6)
+      const featured = await fetchFeaturedProducts();
+      setFeaturedProducts(Array.isArray(featured) ? featured : []);
+
+      // Produtos recentes (máx 8)
+      const recent = await fetchRecentProducts();
+      setRecentProducts(Array.isArray(recent) ? recent : []);
+
+      // Categorias com produtos (show_home=true, com produtos)
+      const cats = await fetchCategoriesForHome();
+      setCategories(Array.isArray(cats) ? cats : []);
     } catch (err) {
-      toast({ title: 'Error', description: err?.message || 'Failed to fetch products', variant: 'destructive' });
-      setProducts([]);
+      toast({ title: 'Erro', description: err?.message || 'Falha ao carregar dados', variant: 'destructive' });
+      setFeaturedProducts([]);
+      setRecentProducts([]);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
@@ -53,17 +55,6 @@ const HomePage = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  // Pagination logic
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(products.length / productsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   if (!storeConfig) {
     return (
@@ -76,21 +67,19 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>{storeConfig.name} - Las Mejores Ofertas</title>
-        <meta name="description" content={`Descubre las mejores ofertas y promociones en ${storeConfig.name}. Productos seleccionados con los mejores precios del mercado.`} />
+        <title>{storeConfig.name} - As Melhores Ofertas</title>
+        <meta name="description" content={`Descubra as melhores ofertas e promoções em ${storeConfig.name}. Produtos selecionados com os melhores preços do mercado.`} />
       </Helmet>
 
       <Layout>
-
-
         {/* Hero Banner */}
-        <section 
+        <section
           className="relative h-[400px] bg-cover bg-center"
           style={{ backgroundImage: `url(${storeConfig.banner})` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
           <div className="relative container mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -98,110 +87,50 @@ const HomePage = () => {
             >
               Bem-vindo à Central de Ofertas
             </motion.h2>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl text-white max-w-2xl"
+              className="text-xl text-white mb-8"
             >
-              Reunimos as melhores ofertas dos mercados online em um só lugar para você economizar tempo e dinheiro. Compare, descubra promoções e aproveite oportunidades.
+              Encontre as melhores promoções e ofertas exclusivas
             </motion.p>
           </div>
         </section>
 
-        {/* Products Grid */}
-        <section className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-12">
           {loading ? (
-            <div className="text-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-2xl text-gray-600">No hay ofertas disponibles en este momento</p>
-              <p className="text-gray-500 mt-2">¡Vuelve pronto para descubrir nuevas promociones!</p>
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {currentProducts.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                  >
-                    <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                      <div className="h-64 overflow-hidden">
-                        {product.image ? (
-                          <img
-                            src={encodeURI(product.image)}
-                            alt={product.name}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                            onError={(e) => { e.target.style.display = 'none' }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">No image</div>
-                        )}
-                      </div>
-                      <div className="p-6">
-                        <p className="text-gray-700 mb-4 font-semibold">{product.name}</p>
-                        <Button
-                          className="w-full"
-                          onClick={() => {
-                            const link = product.product_link || product.link_oferta;
-                            if (link) {
-                              window.open(link, '_blank');
-                            } else {
-                              toast({ title: product.name, description: `Ver detalhes` });
-                            }
-                          }}
-                        >
-                          Ver Oferta
-                        </Button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
-
-                  {[...Array(totalPages)].map((_, index) => (
-                    <Button
-                      key={index + 1}
-                      variant={currentPage === index + 1 ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handlePageChange(index + 1)}
-                    >
-                      {index + 1}
-                    </Button>
-                  ))}
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
+              {/* Seção 1: Produtos em Destaque */}
+              {featuredProducts.length > 0 && (
+                <section className="mb-12">
+                  <h2 className="text-3xl font-bold mb-8 text-center">Produtos em Destaque</h2>
+                  <FeaturedCarousel products={featuredProducts} />
+                </section>
               )}
+
+              {/* Seção 2: Produtos Recém Adicionados */}
+              {recentProducts.length > 0 && (
+                <section className="mb-12">
+                  <h2 className="text-3xl font-bold mb-8 text-center">Produtos Recém Adicionados</h2>
+                  <RecentCarousel products={recentProducts} />
+                </section>
+              )}
+
+              {/* Seção 3: Categorias */}
+              {categories.map((category) => (
+                <section key={category.id} className="mb-12">
+                  <CategoryCarousel category={category} />
+                </section>
+              ))}
             </>
           )}
-        </section>
-
-        </Layout>
+        </div>
+      </Layout>
     </>
   );
 };

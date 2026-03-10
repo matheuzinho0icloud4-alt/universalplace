@@ -25,4 +25,20 @@ async function remove(id, userId) {
   return { old, count }
 }
 
-module.exports = { listAll, listByUser, create, update, remove }
+async function getFeatured(limit = 6) {
+  return productRepo.getFeaturedProducts(limit)
+}
+
+async function getRecent(limit = 8) {
+  return productRepo.getRecentProducts(limit)
+}
+
+async function getByCategory(categorySlug, page = 1, limit = 12) {
+  return productRepo.getProductsByCategoryWithCount(categorySlug, page, limit)
+}
+
+async function getForCategoryCarousel(categoryId, limit = 6) {
+  return productRepo.getProductsForCategoryCarousel(categoryId, limit)
+}
+
+module.exports = { listAll, listByUser, create, update, remove, getFeatured, getRecent, getByCategory, getForCategoryCarousel }

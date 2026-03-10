@@ -4,13 +4,13 @@ const logger = require('../utils/logger')
 
 async function create(req, res, next) {
   try {
-    const { name, image, description, product_link, link_oferta } = req.body
+    const { name, image, description, product_link, category_id, is_featured } = req.body
     // accept both `product_link` and legacy `link_oferta` (prefer product_link)
     const finalLink = product_link || link_oferta || null
-    logger.debug('CREATE body: %o', { name, image, description, product_link: finalLink })
+    logger.debug('CREATE body: %o', { name, image, description, product_link: finalLink, category_id, is_featured })
 
     // image is expected to be an external URL string (or null)
-    const prod = await productService.create({ name, image, description, product_link: finalLink }, req.user.id)
+    const prod = await productService.create({ name, image, description, product_link: finalLink, category_id, is_featured }, req.user.id)
     logger.info('Product created: %s by user %s', prod.id, req.user?.id)
     res.status(201).json({ success: true, data: prod, message: 'Product created successfully' })
   } catch (err) {
@@ -43,11 +43,11 @@ async function list(req, res, next) {
 
 async function update(req, res, next) {
   try {
-    const { name, image, description, product_link, link_oferta } = req.body
+    const { name, image, description, product_link, link_oferta, category_id, is_featured } = req.body
     const finalLink = product_link || link_oferta || null
-    logger.debug('UPDATE body: %o', { name, image, description, product_link: finalLink })
+    logger.debug('UPDATE body: %o', { name, image, description, product_link: finalLink, category_id, is_featured })
 
-    const updates = { name, image, description, product_link: finalLink }
+    const updates = { name, image, description, product_link: finalLink, category_id, is_featured }
     
     // service now returns { old, updated }
     const { old, updated } = await productService.update(req.params.id, req.user.id, updates)
@@ -89,4 +89,39 @@ async function remove(req, res, next) {
   }
 }
 
-module.exports = { create, list, update, remove }
+async function getFeatured(req, res, next) {
+  try {
+    const limit = parseInt(req.query.limit) || 6
+    const products = await productService.getFeatured(limit)
+    res.json({ success: true, data: products })
+  } catch (err) {
+    logger.error('GET FEATURED error: %o', err)
+    next(err)
+  }
+}
+
+async function getRecent(req, res, next) {
+  try {
+    const limit = parseInt(req.query.limit) || 8
+    const products = await productService.getRecent(limit)
+    res.json({ success: true, data: products })
+  } catch (err) {
+    logger.error('GET RECENT error: %o', err)
+    next(err)
+  }
+}
+
+async function getByCategory(req, res, next) {
+  try {
+    const { slug } = req.params
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 12
+    const result = await productService.getByCategory(slug, page, limit)
+    res.json({ success: true, data: result })
+  } catch (err) {
+    logger.error('GET BY CATEGORY error: %o', err)
+    next(err)
+  }
+}
+
+module.exports = { create, list, update, remove, getFeatured, getRecent, getByCategory }

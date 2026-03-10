@@ -64,6 +64,7 @@ app.use(cookieParser())
 // routes
 app.use("/auth", require("./routes/auth"))
 app.use("/products", require("./routes/products"))
+app.use("/categories", require("./routes/categories"))
 app.use("/api/store-config", require("./routes/storeConfig"))
 
 // error handler must go last
