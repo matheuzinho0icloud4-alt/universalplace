@@ -15,6 +15,10 @@ import TermsOfUse from '@/pages/TermsOfUse';
 import CategoryPage from '@/pages/CategoryPage';
 
 function App() {
+  React.useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
+
   return (
     <AuthProvider>
       <Router>

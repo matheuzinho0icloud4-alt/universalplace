@@ -51,14 +51,14 @@ function Layout({ children }) {
         <title>{storeConfig.name}</title>
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-background">
         {/* Header */}
-        <header className="bg-white shadow-md sticky top-0 z-50">
+        <header className="bg-background border-b border-border shadow-md sticky top-0 z-50">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div className="flex items-center gap-2 md:gap-4 flex-1">
                 {storeConfig.logo && (
-                  <img src={storeConfig.logo} alt={`${storeConfig.name} logo`} className="h-10 md:h-12 object-contain flex-shrink-0" />
+                  <img src={storeConfig.logo} alt={`${storeConfig.name} logo`} className="h-12 sm:h-14 md:h-16 lg:h-20 object-contain flex-shrink-0" />
                 )}
                 <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 truncate">{storeConfig.name}</h1>
               </div>
