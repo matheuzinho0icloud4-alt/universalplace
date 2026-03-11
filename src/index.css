@@ -59,6 +59,18 @@
     font-family: 'Inter', 'DM Sans', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
   }
+  a {
+    @apply text-primary hover:text-primary/80 transition-colors;
+  }
+  a:visited {
+    @apply text-primary;
+  }
+  input, select, textarea {
+    @apply bg-input text-foreground;
+  }
+  input::placeholder, textarea::placeholder {
+    @apply text-muted-foreground;
+  }
 }
 
 @layer utilities {

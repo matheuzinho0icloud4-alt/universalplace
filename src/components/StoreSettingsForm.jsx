@@ -168,7 +168,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
               value={formData.name}
               onChange={handleNameChange}
               placeholder="Enter store name"
-              className="mt-1 text-gray-900"
+              className="mt-1"
             />
             {errors.name && (
               <p className="text-sm text-red-500 mt-1">{errors.name}</p>
@@ -184,7 +184,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
               placeholder="Cole a URL da logo"
               value={formData.logo_url}
               onChange={(e) => handleInputChange('logo_url', e.target.value)}
-              className="mt-1 text-gray-900"
+              className="mt-1"
               disabled={loading}
             />
             {errors.logo_url && (
@@ -211,7 +211,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
               placeholder="Cole a URL do banner"
               value={formData.banner_url}
               onChange={(e) => handleInputChange('banner_url', e.target.value)}
-              className="mt-1 text-gray-900"
+              className="mt-1"
               disabled={loading}
             />
             {errors.banner_url && (
@@ -241,7 +241,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
                 value={formData.socialMedia.instagram}
                 onChange={(e) => handleSocialMediaChange('instagram', e.target.value)}
                 placeholder="https://instagram.com/yourstore"
-                className="mt-1 text-gray-900"
+                className="mt-1"
                 disabled={loading}
               />
             </div>
@@ -254,7 +254,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
                 value={formData.socialMedia.facebook}
                 onChange={(e) => handleSocialMediaChange('facebook', e.target.value)}
                 placeholder="https://facebook.com/yourstore"
-                className="mt-1 text-gray-900"
+                className="mt-1"
                 disabled={loading}
               />
             </div>
@@ -267,7 +267,7 @@ const StoreSettingsForm = ({ onUpdate = () => {} }) => {
                 value={formData.socialMedia.youtube}
                 onChange={(e) => handleSocialMediaChange('youtube', e.target.value)}
                 placeholder="https://youtube.com/@yourchannel"
-                className="mt-1 text-gray-900"
+                className="mt-1"
                 disabled={loading}
               />
             </div>

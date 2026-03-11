@@ -74,12 +74,12 @@ const CategoriesMenu = () => {
                 <button
                   key={category.id}
                   onClick={() => handleCategoryClick(category.slug)}
-                  className="block w-full bg-white border border-gray-200 rounded-lg p-3 md:p-4 hover:shadow-lg hover:border-gray-300 transition-all duration-200 text-left"
+                  className="block w-full bg-card border border-border rounded-lg p-3 md:p-4 hover:shadow-lg hover:border-primary transition-all duration-200 text-left"
                 >
-                  <h3 className="font-semibold text-sm md:text-base text-gray-900 mb-1 line-clamp-2">
+                  <h3 className="font-semibold text-sm md:text-base text-foreground mb-1 line-clamp-2">
                     {category.name}
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-600">
+                  <p className="text-xs md:text-sm text-muted-foreground">
                     Ver produtos
                   </p>
                 </button>

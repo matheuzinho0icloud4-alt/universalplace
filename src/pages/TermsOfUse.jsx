@@ -5,7 +5,7 @@ import Layout from '@/components/Layout';
 const TermsOfUse = () => {
   return (
     <Layout>
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-900">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-foreground">
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6">Termos de Uso</h2>
         
         <p className="mb-4">

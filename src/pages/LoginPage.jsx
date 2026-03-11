@@ -93,7 +93,7 @@ const LoginPage = () => {
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Enter your email"
-                  className="mt-1 text-gray-900 text-sm"
+                  className="mt-1 text-sm"
                 />
                 {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
               </div>
@@ -106,7 +106,7 @@ const LoginPage = () => {
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   placeholder="Enter your password"
-                  className="mt-1 text-gray-900 text-sm"
+                  className="mt-1 text-sm"
                 />
                 {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
               </div>

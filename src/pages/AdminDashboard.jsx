@@ -158,12 +158,12 @@ const AdminDashboard = () => {
                   Voltar para Página Principal
                 </Button>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{storeConfig.name}</h1>
-                  <p className="text-xs sm:text-sm text-gray-600">Admin Dashboard</p>
+                  <h1 className="text-xl sm:text-2xl font-bold text-foreground">{storeConfig.name}</h1>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Admin Dashboard</p>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-                <span className="text-xs sm:text-sm text-gray-600 order-2 sm:order-1">Welcome, {currentUser?.email ? currentUser.email.split('@')[0] : currentUser?.id}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground order-2 sm:order-1">Welcome, {currentUser?.email ? currentUser.email.split('@')[0] : currentUser?.id}</span>
                 <Button variant="outline" onClick={handleLogout} className="w-full sm:w-auto order-1 sm:order-2" size="sm">
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout

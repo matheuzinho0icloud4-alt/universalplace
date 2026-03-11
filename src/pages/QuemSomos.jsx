@@ -5,7 +5,7 @@ import Layout from '@/components/Layout';
 const QuemSomos = () => {
   return (
     <Layout>
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-900">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-foreground">
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6">Quem Somos</h2>
         <p className="mb-4">
           Criamos este site com um objetivo claro: oferecer uma experiência simples, segura e eficiente para você encontrar exatamente o que precisa.

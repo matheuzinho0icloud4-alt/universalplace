@@ -129,7 +129,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
               placeholder="Cole a URL da imagem"
               value={formData.image}
               onChange={handleImageUrlChange}
-              className="mt-1 text-gray-900 text-sm"
+              className="mt-1 text-sm"
             />
             {errors.image && <p className="text-xs text-red-500 mt-1">{errors.image}</p>}
             {formData.image && (
@@ -150,7 +150,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Enter product name"
-              className="mt-1 text-gray-900"
+              className="mt-1"
             />
             {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
           </div>
@@ -163,7 +163,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
               value={formData.product_link}
               onChange={(e) => setFormData(prev => ({ ...prev, product_link: e.target.value }))}
               placeholder="https://exemplo.com/produto"
-              className="mt-1 text-gray-900"
+              className="mt-1"
             />
             {errors.product_link && <p className="text-sm text-red-500 mt-1">{errors.product_link}</p>}
           </div>
@@ -175,7 +175,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Descrição do produto"
-              className="mt-1 text-gray-900"
+              className="mt-1"
             />
           </div>
 
@@ -185,7 +185,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, product = null }) => {
               id="category"
               value={formData.category_id}
               onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+              className="mt-1 block w-full px-3 py-2 border border-input rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-input text-foreground"
               disabled={loadingCategories}
             >
               <option value="">Selecionar categoria</option>

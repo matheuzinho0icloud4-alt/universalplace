@@ -60,7 +60,7 @@ function Layout({ children }) {
                 {storeConfig.logo && (
                   <img src={storeConfig.logo} alt={`${storeConfig.name} logo`} className="h-12 sm:h-14 md:h-16 lg:h-20 object-contain flex-shrink-0" />
                 )}
-                <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 truncate">{storeConfig.name}</h1>
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground truncate">{storeConfig.name}</h1>
               </div>
 
               <div className="flex items-center gap-2 md:gap-4 w-full sm:w-auto">
@@ -102,7 +102,7 @@ function Layout({ children }) {
 
                 {/* Admin Button */}
                 <Link to="/admin/login" className="sm:w-auto">
-                  <button className="border border-gray-900 text-gray-900 rounded px-3 py-1 text-xs md:text-sm hover:bg-gray-100 transition w-auto">Admin</button>
+                  <button className="border border-border text-foreground rounded px-3 py-1 text-xs md:text-sm hover:bg-accent hover:text-accent-foreground transition w-auto">Admin</button>
                 </Link>
               </div>
             </div>
@@ -128,17 +128,17 @@ function Layout({ children }) {
                 <p className="font-semibold mb-3">Institucional</p>
                 <ul className="space-y-2">
                   <li>
-                    <Link to="/quem-somos" className="text-gray-400 hover:text-white transition-colors text-sm">
+                    <Link to="/quem-somos" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                       Quem Somos
                     </Link>
                   </li>
                   <li>
-                    <Link to="/politica-de-privacidade" className="text-gray-400 hover:text-white transition-colors text-sm">
+                    <Link to="/politica-de-privacidade" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                       Política de Privacidade
                     </Link>
                   </li>
                   <li>
-                    <Link to="/termos-de-uso" className="text-gray-400 hover:text-white transition-colors text-sm">
+                    <Link to="/termos-de-uso" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                       Termos de Uso
                     </Link>
                   </li>
