@@ -43,7 +43,7 @@ const CategoryCarousel = ({ category }) => {
               <CardContent className="p-3 md:p-4 flex flex-col">
                 <h3 className="font-semibold text-xs md:text-sm line-clamp-2 mb-2">{product.name}</h3>
                 <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-grow">{product.description}</p>
-                <Button asChild size="sm" className="w-full">
+                <Button asChild size="sm" className="w-full text-white">
                   <a href={product.product_link} target="_blank" rel="noopener noreferrer">
                     Ver Oferta
                   </a>
@@ -56,7 +56,7 @@ const CategoryCarousel = ({ category }) => {
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white shadow-lg hover:bg-gray-100 hidden md:flex"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-primary text-primary-foreground shadow-lg hover:bg-primary/80 hidden md:flex"
           onClick={scrollLeft}
         >
           <ChevronLeft className="h-4 w-4" />
@@ -64,7 +64,7 @@ const CategoryCarousel = ({ category }) => {
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-white shadow-lg hover:bg-gray-100 hidden md:flex"
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-primary text-primary-foreground shadow-lg hover:bg-primary/80 hidden md:flex"
           onClick={scrollRight}
         >
           <ChevronRight className="h-4 w-4" />

@@ -71,7 +71,7 @@ function Layout({ children }) {
                       href={storeConfig.socialMedia.instagram} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-pink-600 hover:text-pink-700 transition-colors"
+                      className="text-pink-400 hover:text-pink-300 transition-colors"
                       title="Instagram"
                     >
                       <Instagram className="w-4 h-4 md:w-5 md:h-5" />
@@ -82,7 +82,7 @@ function Layout({ children }) {
                       href={storeConfig.socialMedia.facebook} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 transition-colors"
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
                     >
                       <Facebook className="w-4 h-4 md:w-5 md:h-5" />
                     </a>
@@ -92,7 +92,7 @@ function Layout({ children }) {
                       href={storeConfig.socialMedia.youtube} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-red-600 hover:text-red-700 transition-colors"
+                      className="text-red-500 hover:text-red-400 transition-colors"
                       title="YouTube"
                     >
                       <Play className="w-4 h-4 md:w-5 md:h-5" />
