@@ -94,7 +94,7 @@ const CategoryPage = () => {
                       </div>
                       <h3 className="font-semibold text-xs md:text-sm mb-2 line-clamp-2">{product.name}</h3>
                       <p className="text-xs text-muted-foreground line-clamp-2 mb-3 flex-grow">{product.description}</p>
-                      <Button asChild size="sm" className="w-full text-white">
+                      <Button asChild size="sm" className="w-full !text-white">
                         <a href={product.product_link} target="_blank" rel="noopener noreferrer">
                           Ver Oferta
                         </a>

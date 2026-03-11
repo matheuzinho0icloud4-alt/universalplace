@@ -33,7 +33,7 @@ const RecentCarousel = ({ products }) => {
             <CardContent className="p-3 md:p-4 flex flex-col">
               <h3 className="font-semibold text-xs md:text-sm line-clamp-2 mb-2">{product.name}</h3>
               <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-grow">{product.description}</p>
-              <Button asChild size="sm" className="w-full text-white">
+              <Button asChild size="sm" className="w-full !text-white">
                 <a href={product.product_link} target="_blank" rel="noopener noreferrer">
                   Ver Oferta
                 </a>
